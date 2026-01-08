@@ -45,14 +45,10 @@
   services.devmon.enable = true;
 
   security.polkit.enable = true;
+
+  services.gnome.gnome-keyring.enable = true;
   
   services.fprintd.enable = true;
-
-  # security.sudo.configFile = ''
-  #   %admin: ALL = (root) NOPASSWD: evemu-event
-  # '';
-
-  # services.keyd.enable = true;
 
   services.greetd = {
   	enable = true;
@@ -123,6 +119,28 @@
     #media-session.enable = true;
   };
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        # Shows battery charge of connected devices on supported
+        # Bluetooth adapters. Defaults to 'false'.
+        Experimental = true;
+        # When enabled other devices can connect faster to us, however
+        # the tradeoff is increased power consumption. Defaults to
+        # 'false'.
+        FastConnectable = true;
+      };
+      Policy = {
+        # Enable all controllers when they are found. This includes
+        # adapters present on start as well as adapters that are plugged
+        # in later on. Defaults to 'true'.
+        AutoEnable = true;
+      };
+    };
+  };
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
   services.flatpak.enable = true;
@@ -135,15 +153,17 @@
       sansSerif = [ "Noto Sans" ];
       monospace = [ "FiraMono Nerd Font" ];
     };
+    packages = with pkgs; [
+    	nerd-fonts.fira-code
+    ];
   };
 
   programs.steam = {
   	enable = true;
-  	# extraPackages = [ gamescope ];
   };
   hardware.steam-hardware.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # User accounts
   users.users = {
     iggy = {
       isNormalUser = true;
@@ -166,7 +186,6 @@
     };
   };
 
-  # programs.home-manager.enable = true;
   programs.firefox.enable = true;
   
   programs.hyprland = {
@@ -174,8 +193,7 @@
     xwayland.enable = true;
   };
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  
-  # wayland.windowManager.hyprland.enable = true;
+
   programs.git = {
   	enable = true;
   	config = {
@@ -185,18 +203,9 @@
   	};
   };
 
-  # programs.kitty = {
-  	# enable = true;
-  	# font.name = font.mono.family;
-  	# shellIntegration.enableBashIntegration = true;
-  # };
   programs.starship.enable = true;
-  programs.bash = {
-  	enable = true;
-  # 	shellAliases = {
-  # 		t = "echo test2 ";
-  # 	};
-  };
+  programs.bash.enable = true;
+
 
   virtualisation.docker = {
   	enable = true;
@@ -205,82 +214,91 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-	kitty
-    vim
+    # terminal tools
     wget
-    micro
-    wofi
-    rofi 
-    home-manager
-    waybar
     git
-    hyprpaper
-    vscode
-    zed-editor
-    fzf
-    brightnessctl
-    kdePackages.dolphin
-    kdePackages.qt6ct
-    themechanger
-    wl-clipboard
-    hyprshot
-    python3
-    eza
-    lshw
-    btop
-    bibata-cursors
-    bluetui
-    impala
-    bluez
-    prismlauncher
-    hyprpicker
-    hyprlock
-    wev
-    blahaj
-    fastfetch
-    qdirstat
-    syncthing
-    gimp
-    localsend
-    mako
-    ffmpeg
-    killall
-    unzip
-    jq
-    yq
-    bat
-    libnotify
-    imagemagick
-    libreoffice-qt-fresh
-    kdePackages.okular
-    vlc
-    handbrake
-    rivalcfg
-    screen
-    obs-studio
-    obsidian #find an alternative
-    lavat
-    winboat
-    kdePackages.kio-admin
-    qbittorrent
-    cider # how is there still no other option
-    kdePackages.systemsettings
-    pavucontrol
-    eww
+    caligula
+    dysk
     pulseaudio
     tree
     evemu
-    caligula
-    dysk
-    freecad
+    vim
+    micro
+    fzf
+    eza
+    lshw
+    btop
+    blahaj
+    lavat
+    yq
+    jq
+    bat
+    fastfetch
+    screen
+
+    # nix/nixos 
+    home-manager
+
+    # languages
+    python3
+    nodejs_22
+    clang-tools
+    clang
+
+    # desktop environment
+    hyprpaper
+    waybar
+    hyprshot
+    hyprlock
+    hyprpicker
+    libnotify
+    bibata-cursors
+    kdePackages.kio-admin
+    kdePackages.systemsettings
+    kdePackages.dolphin
+    kdePackages.qt6ct
+    pavucontrol
+    mako
+    brightnessctl
+    bluez
+
+    # apps
+	kitty
     kdePackages.gwenview
+    kdePackages.kdenlive
+    kdePackages.okular
+    handbrake
     geteduroam
     inav-configurator
-    bibata-cursors
-    kdePackages.kdenlive
+    libreoffice-qt-fresh
+    qdirstat
+    prismlauncher
+    rofi 
+    vscode
+    zed-editor
+    themechanger
+    wl-clipboard
+    bluetui
+    impala
+    bluez
+    wev
+    syncthing
+    gimp
+    localsend
+    ffmpeg
+    killall
+    unzip
+    imagemagick
+    vlc
+    rivalcfg
+    obs-studio
+    obsidian #find an alternative
+    qbittorrent
+    eww
+    freecad
+    goose-cli
+    logseq
   ];
 
   environment.shellAliases = {
@@ -294,6 +312,7 @@
   	numlock_toggle = ''
 	  evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 1 --sync; evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 0 --sync
   	'';
+  	blackhawk = "ssh bc1054@blackhawk.ece.uah.edu";
   };
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -308,12 +327,6 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
