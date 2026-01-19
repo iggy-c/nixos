@@ -11,7 +11,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "default"; # Define your hostname.
+  networking.hostName = "iggy-laptop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -43,11 +43,8 @@
   services.gvfs.enable = true;
   services.udisks2.enable = true;
   services.devmon.enable = true;
-
   security.polkit.enable = true;
-
   services.gnome.gnome-keyring.enable = true;
-  
   services.fprintd.enable = true;
 
   services.greetd = {
@@ -70,11 +67,27 @@
     TTYVTDisallocate = true;
   };
 
+  # Power management
+  # Disable if devices take long to unsuspend (keyboard, mouse, etc)
+    powerManagement.powertop.enable = true;
+    services = {
+      power-profiles-daemon.enable = false;
+      tlp = {
+        enable = true;
+        settings = {
+          CPU_BOOST_ON_AC = 1;
+          CPU_BOOST_ON_BAT = 0;
+          CPU_SCALING_GOVERNOR_ON_AC = "performance";
+          CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+          STOP_CHARGE_THRESH_BAT0 = 90;
+        };
+      };
+    };
+
   #nvidia shit
   hardware.graphics = {
   	enable = true;
   };
-
   hardware.nvidia = {
   	modesetting.enable = true;
   	open = true;
@@ -91,7 +104,6 @@
   		nvidiaBusId = "PCI:1:0:0";
   	};
   };
-
   services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
 
   # Configure keymap in X11
@@ -163,12 +175,14 @@
   };
   hardware.steam-hardware.enable = true;
 
+  # User groups
+  users.groups.nixers = {};
   # User accounts
   users.users = {
     iggy = {
       isNormalUser = true;
       description = "personal account";
-      extraGroups = [ "networkmanager" "wheel" "docker" ];
+      extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "nixers" ];
       packages = with pkgs; [
         # steam
         gh
@@ -178,13 +192,14 @@
     wiggy = {
       isNormalUser = true;
       description = "work account";
-      extraGroups = [ "networkmanager" "wheel" "docker" ];
+      extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "nixers" ];
       packages = with pkgs; [
       	code-cursor
       	keepassxc
       ];
     };
   };
+  nix.settings.trusted-users = [ "iggy" "wiggy" "root" "@nixers" ];
 
   programs.firefox.enable = true;
   
@@ -207,13 +222,105 @@
   programs.bash.enable = true;
 
 
-  virtualisation.docker = {
+  virtualisation.docker.enable = true;
+  # virtualisation.podman.enable = true;
+  virtualisation.libvirtd = {
+  	enable = true;
+  	qemu.swtpm.enable = true;
+  };
+  virtualisation.spiceUSBRedirection.enable = true;
+  services.spice-vdagentd.enable = true;
+
+  programs.direnv = {
+  	enable = true;
+  	nix-direnv.enable = true;
+  };
+
+  programs.nh = {
   	enable = true;
   };
 
+  # inputs.copyparty.url = "github:9001/copyparty";
+  # outputs = { self, nixpkgs, copyparty }: {
+  #   nixosConfigurations.yourHostName = nixpkgs.lib.nixosSystem {
+  #     modules = [
+  #       # load the copyparty NixOS module
+  #       copyparty.nixosModules.default
+  #       ({ pkgs, ... }: {
+  #         # add the copyparty overlay to expose the package to the module
+  #         nixpkgs.overlays = [ copyparty.overlays.default ];
+  #         # (optional) install the package globally
+  #         environment.systemPackages = [ pkgs.copyparty ];
+  #         # configure the copyparty module
+  #         services.copyparty = {
+  #           enable = true;
+  #           user = "copyparty";
+  #           group = "copyparty";
+  #           settings = {
+  #             i = "0.0.0.0";
+  #             p = [ 3210 3211 ];
+  #             no-reload = true;
+  #           };
+  #           volumes = {
+  #             "/" = {
+  #           	path = "srv/copyparty";
+  #           	access = {
+  #                 rw = "*";
+  #           	};
+  #             };
+  #             flags = {
+  #           	fk = 4;
+  #           	scan = 60;
+  #           	e2d = true;
+  #           	d2t = true;
+  #             };
+  #           };
+  #         };
+  #       })
+  #     ];
+  #   };
+  # };
+
+#   services.copyparty = {
+#   	enable = true;
+#   	user = "copyparty";
+#   	group = "copyparty";
+# 
+#   	settings = {
+#   	  i = "0.0.0.0";
+#   	  p = [ 3210 3211 ];
+#   	  no-reload = true;
+#   	};
+# 
+#   	volumes = {
+#   	  "/" = {
+#   		path = "srv/copyparty";
+#   		access = {
+#   	      rw = "*";
+#   		};
+#   	  };
+#   	  flags = {
+#   		fk = 4;
+#   		scan = 60;
+#   		e2d = true;
+#   		d2t = true;
+#   	  };
+#   	};
+#   };
+
+  # nix ld 
+  programs.nix-ld = {
+  	enable = true;
+  	# libraries = with pkgs; [
+  	# 	
+  	# ]
+  	# uncomment above when using more packages
+  	# https://wiki.nixos.org/wiki/Nix-ld
+  };
+  
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
+  
   environment.systemPackages = with pkgs; [
     # terminal tools
     wget
@@ -231,11 +338,25 @@
     btop
     blahaj
     lavat
+    pipes
+    cbonsai
     yq
     jq
     bat
     fastfetch
     screen
+    nmap
+    speedtest-rs
+    ncdu
+    nixfmt
+    zip
+    unzip
+    unrar
+    imagemagick
+    rename #the perl one
+    lazydocker
+    socat
+    tio
 
     # nix/nixos 
     home-manager
@@ -245,6 +366,11 @@
     nodejs_22
     clang-tools
     clang
+    cargo
+    rustup
+    bun
+    gnumake
+    mono
 
     # desktop environment
     hyprpaper
@@ -252,6 +378,7 @@
     hyprshot
     hyprlock
     hyprpicker
+    hypridle
     libnotify
     bibata-cursors
     kdePackages.kio-admin
@@ -268,6 +395,7 @@
     kdePackages.gwenview
     kdePackages.kdenlive
     kdePackages.okular
+    kdePackages.partitionmanager
     handbrake
     geteduroam
     inav-configurator
@@ -288,8 +416,6 @@
     localsend
     ffmpeg
     killall
-    unzip
-    imagemagick
     vlc
     rivalcfg
     obs-studio
@@ -299,12 +425,34 @@
     freecad
     goose-cli
     logseq
+    kdePackages.kcalc
+    tailscale
+    ripgrep
+    silver-searcher
+    notcurses
+    openssl
+    qemu
+    quickemu
+    virt-manager
+    # lovely-injector
+    # r2modman
+    toolbox
+    telegram-desktop
+    # py7zr
+    gnome-boxes
+    spice
+    mission-planner
+
+    # copyparty
+    copyparty
+    cloudflared
   ];
 
   environment.shellAliases = {
   	sudo = "sudo ";
-  	rs = "nixos-rebuild switch";
-  	rt = "nixos-rebuild test";
+  	ssh = "kitten ssh";
+  	rs = "nh os switch /etc/nixos/";
+  	# rt = "nixos-rebuild test";
   	ls = "eza";
   	la = "eza -a";
   	li = "eza --icons";
@@ -313,6 +461,9 @@
 	  evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 1 --sync; evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 0 --sync
   	'';
   	blackhawk = "ssh bc1054@blackhawk.ece.uah.edu";
+  	todo = "micro ~/Documents/todo.txt";
+  	miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
+  	sreboot = "systemctl reboot -i";
   };
 
   # Some programs need SUID wrappers, can be configured further or are
