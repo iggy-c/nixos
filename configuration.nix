@@ -1,15 +1,27 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  pkgsRocmCuda,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      # ./home.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    # ./home.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    v4l2loopback
+  ];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
 
   networking.hostName = "iggy-laptop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -21,7 +33,10 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   time.timeZone = "America/Chicago";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -37,25 +52,52 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  services = {
+    xserver.xkb = {
+      layout = "us";
+      variant = "";
+    };
 
-  services.gvfs.enable = true;
-  services.udisks2.enable = true;
-  services.devmon.enable = true;
-  security.polkit.enable = true;
-  services.gnome.gnome-keyring.enable = true;
-  services.fprintd.enable = true;
+    xserver.enable = true;
+    usbmuxd.enable = true;
+    printing.enable = true;
+    gvfs.enable = true;
+    udisks2.enable = true;
+    devmon.enable = true;
+    polkit.enable = true;
+    gnome.gnome-keyring.enable = true;
+    fprintd.enable = true;
+    playerctld.enable = true;
+    openssh.enable = true;
 
-  services.greetd = {
-  	enable = true;
-  	settings = {
-  	  default_session = {
-  	    command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --user-menu --cmd Hyprland";
-  	    user = "greeter";
-  	  };
-  	};
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --user-menu --cmd Hyprland";
+          user = "greeter";
+        };
+      };
+    };
+
+    # mute on lid open
+    acpid = {
+      enable = true;
+      lidEventCommands = ''
+        export PATH=$PATH:/run/current-system/sw/bin
+        wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 0%
+        wpctl set-mute @DEFAULT_AUDIO_SINK@ 1
+      '';
+    };
   };
+
   systemd.services.greetd.serviceConfig = {
     Type = "idle";
     StandardInput = "tty";
@@ -69,93 +111,63 @@
 
   # Power management
   # Disable if devices take long to unsuspend (keyboard, mouse, etc)
-    powerManagement.powertop.enable = true;
-    services = {
-      power-profiles-daemon.enable = false;
-      tlp = {
-        enable = true;
-        settings = {
-          CPU_BOOST_ON_AC = 1;
-          CPU_BOOST_ON_BAT = 0;
-          CPU_SCALING_GOVERNOR_ON_AC = "performance";
-          CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-          STOP_CHARGE_THRESH_BAT0 = 90;
-        };
+  powerManagement.powertop.enable = true;
+  services = {
+    power-profiles-daemon.enable = false;
+    tlp = {
+      enable = true;
+      settings = {
+        CPU_BOOST_ON_AC = 1;
+        CPU_BOOST_ON_BAT = 0;
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
+        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+        STOP_CHARGE_THRESH_BAT0 = 80;
       };
     };
+  };
 
   #nvidia shit
   hardware.graphics = {
-  	enable = true;
+    enable = true;
   };
   hardware.nvidia = {
-  	modesetting.enable = true;
-  	open = true;
-  	nvidiaSettings = true;
-  	package = config.boot.kernelPackages.nvidiaPackages.stable;
+    modesetting.enable = true;
+    open = true;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
 
-  	prime = {
-  		offload = {
-  			enable = true;
-  			enableOffloadCmd = true;
-  		};
+    prime = {
+      offload = {
+        enable = true;
+        enableOffloadCmd = true;
+      };
 
-  		amdgpuBusId = "PCI:6:0:0";
-  		nvidiaBusId = "PCI:1:0:0";
-  	};
+      amdgpuBusId = "PCI:6:0:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
   };
-  services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.xserver.videoDrivers = [
+    "modesetting"
+    "nvidia"
+  ];
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
 
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
     settings = {
       General = {
-        # Shows battery charge of connected devices on supported
-        # Bluetooth adapters. Defaults to 'false'.
-        Experimental = true;
-        # When enabled other devices can connect faster to us, however
-        # the tradeoff is increased power consumption. Defaults to
-        # 'false'.
+        Experimental = true; # shows battery level
         FastConnectable = true;
       };
       Policy = {
-        # Enable all controllers when they are found. This includes
-        # adapters present on start as well as adapters that are plugged
-        # in later on. Defaults to 'true'.
         AutoEnable = true;
       };
     };
   };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-  services.flatpak.enable = true;
 
   fonts = {
     enableDefaultPackages = true;
@@ -166,43 +178,78 @@
       monospace = [ "FiraMono Nerd Font" ];
     };
     packages = with pkgs; [
-    	nerd-fonts.fira-code
+      nerd-fonts.fira-code
+      corefonts
+      vista-fonts
     ];
   };
 
   programs.steam = {
-  	enable = true;
+    enable = true;
   };
   hardware.steam-hardware.enable = true;
 
   # User groups
-  users.groups.nixers = {};
+  users.groups.nixusers = { };
   # User accounts
   users.users = {
     iggy = {
       isNormalUser = true;
       description = "personal account";
-      extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "nixers" ];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+        "libvirtd"
+        "nixusers"
+        "dialout"
+      ];
       packages = with pkgs; [
         # steam
         gh
-        vesktop
       ];
     };
     wiggy = {
       isNormalUser = true;
       description = "work account";
-      extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "nixers" ];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+        "libvirtd"
+        "nixusers"
+        "dialout"
+      ];
       packages = with pkgs; [
-      	code-cursor
-      	keepassxc
+        code-cursor
+        claude-code
+        keepassxc
       ];
     };
   };
-  nix.settings.trusted-users = [ "iggy" "wiggy" "root" "@nixers" ];
+  nix.settings.trusted-users = [
+    "iggy"
+    "wiggy"
+    "root"
+    "@nixusers"
+  ];
 
-  programs.firefox.enable = true;
-  
+  programs.firefox = {
+    enable = true;
+    preferences = {
+      "browser.aboutConfig.showWarning" = false;
+      "browser.gesture.swipe.left" = "scrollLeft";
+      "browser.gesture.swipe.right" = "scrollRight";
+      "browser.tabs.inTitlebar" = 0;
+      "browser.download.panel.shown" = true;
+      "browser.download.autohideButton" = false;
+    };
+  };
+  programs.obs-studio = {
+    enable = true;
+    enableVirtualCamera = true;
+  };
+
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -210,117 +257,71 @@
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   programs.git = {
-  	enable = true;
-  	config = {
-  		user.name = "iggy";
-  		user.email = "bcus9126@gmail.com";
-  		init.defaultBranch = "main";
-  	};
+    enable = true;
+    config = {
+      user.name = "iggy";
+      user.email = "bcus9126@gmail.com";
+      init.defaultBranch = "main";
+    };
   };
 
   programs.starship.enable = true;
   programs.bash.enable = true;
 
-
   virtualisation.docker.enable = true;
   # virtualisation.podman.enable = true;
   virtualisation.libvirtd = {
-  	enable = true;
-  	qemu.swtpm.enable = true;
+    enable = true;
+    qemu.swtpm.enable = true;
   };
   virtualisation.spiceUSBRedirection.enable = true;
   services.spice-vdagentd.enable = true;
 
   programs.direnv = {
-  	enable = true;
-  	nix-direnv.enable = true;
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   programs.nh = {
-  	enable = true;
+    enable = true;
   };
 
-  # inputs.copyparty.url = "github:9001/copyparty";
-  # outputs = { self, nixpkgs, copyparty }: {
-  #   nixosConfigurations.yourHostName = nixpkgs.lib.nixosSystem {
-  #     modules = [
-  #       # load the copyparty NixOS module
-  #       copyparty.nixosModules.default
-  #       ({ pkgs, ... }: {
-  #         # add the copyparty overlay to expose the package to the module
-  #         nixpkgs.overlays = [ copyparty.overlays.default ];
-  #         # (optional) install the package globally
-  #         environment.systemPackages = [ pkgs.copyparty ];
-  #         # configure the copyparty module
-  #         services.copyparty = {
-  #           enable = true;
-  #           user = "copyparty";
-  #           group = "copyparty";
-  #           settings = {
-  #             i = "0.0.0.0";
-  #             p = [ 3210 3211 ];
-  #             no-reload = true;
-  #           };
-  #           volumes = {
-  #             "/" = {
-  #           	path = "srv/copyparty";
-  #           	access = {
-  #                 rw = "*";
-  #           	};
-  #             };
-  #             flags = {
-  #           	fk = 4;
-  #           	scan = 60;
-  #           	e2d = true;
-  #           	d2t = true;
-  #             };
-  #           };
-  #         };
-  #       })
-  #     ];
-  #   };
-  # };
-
-#   services.copyparty = {
-#   	enable = true;
-#   	user = "copyparty";
-#   	group = "copyparty";
-# 
-#   	settings = {
-#   	  i = "0.0.0.0";
-#   	  p = [ 3210 3211 ];
-#   	  no-reload = true;
-#   	};
-# 
-#   	volumes = {
-#   	  "/" = {
-#   		path = "srv/copyparty";
-#   		access = {
-#   	      rw = "*";
-#   		};
-#   	  };
-#   	  flags = {
-#   		fk = 4;
-#   		scan = 60;
-#   		e2d = true;
-#   		d2t = true;
-#   	  };
-#   	};
-#   };
-
-  # nix ld 
+  # nix ld
   programs.nix-ld = {
-  	enable = true;
-  	# libraries = with pkgs; [
-  	# 	
-  	# ]
-  	# uncomment above when using more packages
-  	# https://wiki.nixos.org/wiki/Nix-ld
+    enable = true;
+    # libraries = with pkgs; [
+    #
+    # ]
+    # uncomment above when using more packages
+    # https://wiki.nixos.org/wiki/Nix-ld
   };
-  
+
+  home-manager = {
+    users.iggy =
+      { ... }:
+      {
+        home = {
+          username = "iggy";
+          homeDirectory = "/home/iggy";
+          stateVersion = "25.11";
+        };
+      };
+    users.wiggy =
+      { ... }:
+      {
+        home = {
+          username = "wiggy";
+          homeDirectory = "/home/wiggy";
+          stateVersion = "25.11";
+        };
+      };
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  
+
+  services.flatpak.enable = true;
+
   environment.systemPackages = with pkgs; [
     # terminal tools
     wget
@@ -330,12 +331,12 @@
     pulseaudio
     tree
     evemu
-    vim
+    neovim
     micro
     fzf
     eza
     lshw
-    btop
+    pkgsRocmCuda.btop
     blahaj
     lavat
     pipes
@@ -348,18 +349,23 @@
     nmap
     speedtest-rs
     ncdu
-    nixfmt
     zip
     unzip
     unrar
     imagemagick
-    rename #the perl one
+    rename # the perl one
     lazydocker
     socat
     tio
-
-    # nix/nixos 
-    home-manager
+    net-tools
+    ripgrep
+    silver-searcher
+    pwgen
+    lsof
+    nixfmt-rfc-style
+    avrdude
+    avrdudess
+    libimobiledevice
 
     # languages
     python3
@@ -375,6 +381,7 @@
     # desktop environment
     hyprpaper
     waybar
+    quickshell
     hyprshot
     hyprlock
     hyprpicker
@@ -389,9 +396,12 @@
     mako
     brightnessctl
     bluez
+    spice
+    wl-clipboard
+    linuxKernel.packages.linux_zen.v4l2loopback
 
     # apps
-	kitty
+    kitty
     kdePackages.gwenview
     kdePackages.kdenlive
     kdePackages.okular
@@ -402,11 +412,10 @@
     libreoffice-qt-fresh
     qdirstat
     prismlauncher
-    rofi 
+    rofi
     vscode
     zed-editor
     themechanger
-    wl-clipboard
     bluetui
     impala
     bluez
@@ -418,8 +427,7 @@
     killall
     vlc
     rivalcfg
-    obs-studio
-    obsidian #find an alternative
+    obsidian # find an alternative
     qbittorrent
     eww
     freecad
@@ -427,21 +435,17 @@
     logseq
     kdePackages.kcalc
     tailscale
-    ripgrep
-    silver-searcher
-    notcurses
     openssl
     qemu
     quickemu
     virt-manager
-    # lovely-injector
-    # r2modman
     toolbox
     telegram-desktop
-    # py7zr
     gnome-boxes
-    spice
     mission-planner
+    dbeaver-bin
+    acpi
+    kicad
 
     # copyparty
     copyparty
@@ -449,35 +453,23 @@
   ];
 
   environment.shellAliases = {
-  	sudo = "sudo ";
-  	ssh = "kitten ssh";
-  	rs = "nh os switch /etc/nixos/";
-  	# rt = "nixos-rebuild test";
-  	ls = "eza";
-  	la = "eza -a";
-  	li = "eza --icons";
-  	ll = "eza -l";
-  	numlock_toggle = ''
-	  evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 1 --sync; evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 0 --sync
-  	'';
-  	blackhawk = "ssh bc1054@blackhawk.ece.uah.edu";
-  	todo = "micro ~/Documents/todo.txt";
-  	miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
-  	sreboot = "systemctl reboot -i";
+    sudo = "sudo ";
+    ssh = "kitten ssh";
+    rs = "nh os switch /etc/nixos/";
+    # rt = "nixos-rebuild test";
+    ls = "eza";
+    la = "eza -a";
+    li = "eza --icons";
+    ll = "eza -l";
+    numlock_toggle = ''
+      	  evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 1 --sync; evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 0 --sync
+        	'';
+    blackhawk = "ssh bc1054@blackhawk.ece.uah.edu";
+    todo = "micro ~/Documents/todo.md";
+    miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
+    sreboot = "systemctl reboot -i";
+    icat = "kitten icat";
   };
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
