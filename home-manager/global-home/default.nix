@@ -1,8 +1,12 @@
 { pkgs, ... }:
+let
+  cursor-name = "Bibata-Modern-Ice";
+  cursor-pkg = pkgs.bibata-cursors;
+  icon-name = "Papirus-Dark";
+  icon-pkg = pkgs.papirus-icon-theme;
+in
 {
-  programs.home-manager = {
-    enable = true;
-  };
+  programs.home-manager.enable = true;
 
   programs.readline = {
     enable = true;
@@ -11,56 +15,92 @@
 
   programs.bash.enable = true;
 
-  programs = {
-    git.settings.core.editor = "nvim";
+  home.pointerCursor = {
+    enable = true;
+    hyprcursor.enable = true;
+    gtk.enable = true;
+    x11.enable = true;
+    package = cursor-pkg;
+    name = cursor-name;
+    size = 24;
+  };
 
-    neovim = {
-      enable = true;
-      defaultEditor = true;
+  gtk = {
+    enable = true;
 
-      viAlias = true;
-      vimAlias = true;
-      vimdiffAlias = true;
+    cursorTheme = {
+      name = cursor-name;
+      package = cursor-pkg;
+    };
 
-      plugins = with pkgs.vimPlugins; [
-        # web
-        coc-html
+    iconTheme = {
+      name = icon-name;
+      package = icon-pkg;
+    };
 
-        # python
-        coc-pyright
+    gtk3.extraConfig = {
+      "gtk-cursor-theme-name" = cursor-name;
+      "gtk-icon-theme-name" = icon-name;
+    };
 
-        # other
-        coc-sh
-        coc-json
-        coc-docker
-        coc-git
-        render-markdown-nvim
+    gtk4.extraConfig = {
+      Settings = ''
+        gtk-cursor-theme-name=${cursor-name}
+        gtk-icon-theme-name=${icon-name}
+      '';
+    };
+  };
 
-        nvim-treesitter.withAllGrammars
-      ];
+  programs.hyprlock = {
+    enable = true;
+    settings = {
+      general = {
+        hide_cursor = true;
+        ignore_empty_input = true;
+      };
+      animations = {
+        enabled = true;
+      };
+      input-field = {
+        monitor = "";
+        size = "20%, 5%";
+        outline_thickness = 0;
+        inner_color = "rgba(0, 0, 0, 0)";
+        font_color = "rgb(FFFFFF)";
+        fade_on_empty = false;
+        rounding = 0;
 
-      coc = {
-        enable = true;
-        settings = {
-          languageserver = {
-            rust = {
-              command = "rust-analyzer";
-              args = [ ];
-              rootPatterns = [
-                "*.rs"
-              ];
-              filetypes = [ "rust" ];
-            };
+        font_family = "";
+        placeholder_text = "";
+        fail_text = "";
 
-            nix = {
-              command = "nil";
-              args = [ ];
-              filetypes = [ "nix" ];
-            };
-          };
-          coc.preferences.formatOnType = true;
-        };
+        dots_text_format = "*";
+        dots_size = 0.8;
+        dots_spacing = 0.3;
+
+        position = "0, 0";
+        halign = "center";
+        valign = "center";
       };
     };
   };
+
+  programs.kitty = {
+    enable = true;
+    themeFile = "gruvbox-dark";
+    shellIntegration.enableBashIntegration = true;
+    extraConfig = ''
+      confirm_os_window_close -1
+    '';
+  };
+
+  programs.rofi = {
+    enable = true;
+    theme = "gruvbox-dark-soft";
+  };
+
+  imports = [
+    ./neovim.nix
+    ./hyprland.nix
+  ];
 }

@@ -9,9 +9,7 @@
 	  disableMinSize = true;
 	  discordBranch = "stable";
 	  minimizeToTray = false;
-	  splashBackground = "#000000";
-	  splashColor = "#ffffff";
-	  splashTheming = true;
+	  enableSplashScreen = false;
 	};
 	vencord.settings = {
 	  autoUpdate = true;
@@ -34,10 +32,6 @@
 	    ClearURLs.enabled = true;
 	    CopyFileContents.enabled = true;
 	    CrashHandler.enabled = true;
-	    CustomIdle = {
-	      enabled = true;
-	      idleTimeout = 5;
-	    };
 	    CustomRPC.enabled = true;
 	    DisableCallIdle.enabled = true;
 	    DontRoundMyTimestamps.enabled = true;
@@ -60,7 +54,6 @@
 	    PictureInPicture.enabled = true;
 	    PinDMs.enabled = true;
 	    PlatformIndicators.enabled = true;
-	    ShikiCodeblocks.enabled = true;
 	    ShowHiddenChannels.enabled = true;
 	    ShowHiddenThings.enabled = true;
 	    SpotifyCrack.enabled = true;

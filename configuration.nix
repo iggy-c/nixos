@@ -2,6 +2,7 @@
   config,
   pkgs,
   pkgsRocmCuda,
+  pkgsMain,
   ...
 }:
 
@@ -38,6 +39,11 @@
     "flakes"
   ];
 
+  swapDevices = [{
+    device = "/swapfile";
+    size = 16 * 1024; # 16GB
+  }];
+
   time.timeZone = "America/Chicago";
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
@@ -52,6 +58,11 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  security = {
+    polkit.enable = true;
+    pam.services.hyprlock.enable = true;
+  };
+  
   services = {
     xserver.xkb = {
       layout = "us";
@@ -64,11 +75,13 @@
     gvfs.enable = true;
     udisks2.enable = true;
     devmon.enable = true;
-    polkit.enable = true;
     gnome.gnome-keyring.enable = true;
     fprintd.enable = true;
     playerctld.enable = true;
-    openssh.enable = true;
+    openssh.enable = true;      
+    udev.packages = with pkgs; [
+      platformio-core
+    ];
 
     pipewire = {
       enable = true;
@@ -77,14 +90,15 @@
       pulse.enable = true;
     };
 
-    greetd = {
+    mpd = {
       enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --user-menu --cmd Hyprland";
-          user = "greeter";
-        };
-      };
+      musicDirectory = "${config.users.users.iggy.home}/Music";
+      extraConfig = ''
+        audio_output {
+          type "pipewire"
+          name "PipeWire Sound Server"
+        }
+      '';
     };
 
     # mute on lid open
@@ -96,17 +110,17 @@
         wpctl set-mute @DEFAULT_AUDIO_SINK@ 1
       '';
     };
-  };
 
-  systemd.services.greetd.serviceConfig = {
-    Type = "idle";
-    StandardInput = "tty";
-    StandardOutput = "tty";
-    StandardError = "journal"; # Without this errors will spam on screen
-    # Without these bootlogs will spam on screen
-    TTYReset = true;
-    TTYVHangup = true;
-    TTYVTDisallocate = true;
+    displayManager.sddm = {
+      enable = true;
+      autoNumlock = true;
+      theme = "where_is_my_sddm_theme";
+      package = pkgs.kdePackages.sddm;
+      extraPackages = with pkgs; [
+        where-is-my-sddm-theme
+	kdePackages.qt5compat
+      ];
+    };
   };
 
   # Power management
@@ -221,7 +235,7 @@
         "dialout"
       ];
       packages = with pkgs; [
-        code-cursor
+        pkgsMain.code-cursor
         claude-code
         keepassxc
       ];
@@ -262,6 +276,9 @@
       user.name = "iggy";
       user.email = "bcus9126@gmail.com";
       init.defaultBranch = "main";
+      diff.tool = "vimdiff";
+      merge.tool = "vimdiff";
+      difftool.prompt = "false";
     };
   };
 
@@ -331,7 +348,7 @@
     pulseaudio
     tree
     evemu
-    neovim
+    # neovim
     micro
     fzf
     eza
@@ -366,6 +383,8 @@
     avrdude
     avrdudess
     libimobiledevice
+    usbutils
+    can-utils
 
     # languages
     python3
@@ -377,6 +396,8 @@
     bun
     gnumake
     mono
+    rust-analyzer
+    nil
 
     # desktop environment
     hyprpaper
@@ -399,9 +420,9 @@
     spice
     wl-clipboard
     linuxKernel.packages.linux_zen.v4l2loopback
+    where-is-my-sddm-theme
 
     # apps
-    kitty
     kdePackages.gwenview
     kdePackages.kdenlive
     kdePackages.okular
@@ -415,7 +436,6 @@
     rofi
     vscode
     zed-editor
-    themechanger
     bluetui
     impala
     bluez
@@ -446,6 +466,12 @@
     dbeaver-bin
     acpi
     kicad
+    spotify
+    rmpc
+    audacious
+    pkgsMain.stoat-desktop
+    vscode-fhs
+    iverilog
 
     # copyparty
     copyparty
@@ -465,10 +491,11 @@
       	  evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 1 --sync; evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 0 --sync
         	'';
     blackhawk = "ssh bc1054@blackhawk.ece.uah.edu";
-    todo = "micro ~/Documents/todo.md";
+    todo = "nvim ~/Documents/todo.md";
     miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
     sreboot = "systemctl reboot -i";
     icat = "kitten icat";
+    config = "sudoedit /etc/nixos/configuration.nix";
   };
 
   # This value determines the NixOS release from which the default
