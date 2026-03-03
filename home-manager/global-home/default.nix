@@ -4,6 +4,8 @@ let
   cursor-pkg = pkgs.bibata-cursors;
   icon-name = "Papirus-Dark";
   icon-pkg = pkgs.papirus-icon-theme;
+  font-name = "FiraCode Nerd Font Mono";
+  font-pkg = pkgs.fira;
 in
 {
   programs.home-manager.enable = true;
@@ -89,9 +91,16 @@ in
     enable = true;
     themeFile = "gruvbox-dark";
     shellIntegration.enableBashIntegration = true;
-    extraConfig = ''
-      confirm_os_window_close -1
-    '';
+    settings = {
+      confirm_os_window_close = -1;
+    };
+    font.package = font-pkg;
+    font.name = font-name;
+    font.size = 12;
+    quickAccessTerminalConfig = {
+	lines = 5;
+	background_opacity = 0.9;
+    };
   };
 
   programs.rofi = {

@@ -123,6 +123,11 @@
     };
   };
 
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk ];
+  };
+
   # Power management
   # Disable if devices take long to unsuspend (keyboard, mouse, etc)
   powerManagement.powertop.enable = true;
@@ -219,8 +224,8 @@
         "dialout"
       ];
       packages = with pkgs; [
-        # steam
         gh
+        prismlauncher
       ];
     };
     wiggy = {
@@ -238,6 +243,8 @@
         pkgsMain.code-cursor
         claude-code
         keepassxc
+        dbeaver-bin
+        goose-cli
       ];
     };
   };
@@ -284,6 +291,7 @@
 
   programs.starship.enable = true;
   programs.bash.enable = true;
+  programs.zsh.enable = true;
 
   virtualisation.docker.enable = true;
   # virtualisation.podman.enable = true;
@@ -340,15 +348,14 @@
   services.flatpak.enable = true;
 
   environment.systemPackages = with pkgs; [
+
     # terminal tools
     wget
-    git
     caligula
     dysk
     pulseaudio
     tree
     evemu
-    # neovim
     micro
     fzf
     eza
@@ -385,6 +392,12 @@
     libimobiledevice
     usbutils
     can-utils
+    acpi
+    killall
+    bluetui
+    wev
+    geteduroam
+    shellcheck
 
     # languages
     python3
@@ -398,6 +411,7 @@
     mono
     rust-analyzer
     nil
+    gcc
 
     # desktop environment
     hyprpaper
@@ -408,13 +422,13 @@
     hyprpicker
     hypridle
     libnotify
-    bibata-cursors
     kdePackages.kio-admin
     kdePackages.systemsettings
     kdePackages.dolphin
     kdePackages.qt6ct
     pavucontrol
     mako
+    rofi
     brightnessctl
     bluez
     spice
@@ -427,55 +441,47 @@
     kdePackages.kdenlive
     kdePackages.okular
     kdePackages.partitionmanager
-    handbrake
-    geteduroam
+    kdePackages.kcalc
     inav-configurator
+    mission-planner
     libreoffice-qt-fresh
     qdirstat
-    prismlauncher
-    rofi
-    vscode
-    zed-editor
-    bluetui
-    impala
-    bluez
-    wev
-    syncthing
     gimp
-    localsend
-    ffmpeg
-    killall
-    vlc
     rivalcfg
-    obsidian # find an alternative
-    qbittorrent
-    eww
     freecad
-    goose-cli
-    logseq
-    kdePackages.kcalc
-    tailscale
-    openssl
+    kicad
+    iverilog
+
+    # video
+    vlc
+    handbrake
+    ffmpeg
+    
+    # sound
+    rmpc
+    spotify
+    audacious
+
+    # virtualisation
+    gnome-boxes
     qemu
     quickemu
     virt-manager
-    toolbox
-    telegram-desktop
-    gnome-boxes
-    mission-planner
-    dbeaver-bin
-    acpi
-    kicad
-    spotify
-    rmpc
-    audacious
-    pkgsMain.stoat-desktop
-    vscode-fhs
-    iverilog
 
-    # copyparty
+    # file sharing
     copyparty
     cloudflared
+    localsend
+    syncthing
+    qbittorrent
+
+    # code editors
+    zed-editor
+    vscode-fhs
+
+    # communication
+    telegram-desktop
+    pkgsMain.stoat-desktop
   ];
 
   environment.shellAliases = {
@@ -496,6 +502,7 @@
     sreboot = "systemctl reboot -i";
     icat = "kitten icat";
     config = "sudoedit /etc/nixos/configuration.nix";
+    se = "sudoedit";
   };
 
   # This value determines the NixOS release from which the default
