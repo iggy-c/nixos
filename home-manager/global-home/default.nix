@@ -15,7 +15,15 @@ in
     extraConfig = "set completion-ignore-case on";
   };
 
-  programs.bash.enable = true;
+  programs.bash = {
+    enable = true;
+    bashrcExtra = ''
+      fff() {
+        command fff "$@"
+        cd "$(cat "''${XDG_CACHE_HOME:=''${HOME}/.cache}/fff/.fff_d")"
+      }
+    '';
+  };
 
   home.pointerCursor = {
     enable = true;

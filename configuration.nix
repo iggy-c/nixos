@@ -16,6 +16,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernel.sysctl."kernel.sysrq" = 1;
 
   boot.extraModulePackages = with config.boot.kernelPackages; [
     v4l2loopback
@@ -463,6 +464,7 @@
     freecad
     kicad
     iverilog
+    typst
 
     # video
     vlc
@@ -495,6 +497,7 @@
     telegram-desktop
     pkgsMain.stoat-desktop
 
+    # dod
     pcsclite
     pcsc-tools
     opensc
