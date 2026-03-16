@@ -53,39 +53,39 @@ in
     };
   };
 
-  programs.hyprlock = {
-    enable = true;
-    settings = {
-      general = {
-        hide_cursor = true;
-        ignore_empty_input = true;
-      };
-      animations = {
-        enabled = true;
-      };
-      input-field = {
-        monitor = "";
-        size = "20%, 5%";
-        outline_thickness = 0;
-        inner_color = "rgba(0, 0, 0, 0)";
-        font_color = "rgb(FFFFFF)";
-        fade_on_empty = false;
-        rounding = 0;
-
-        font_family = "";
-        placeholder_text = "";
-        fail_text = "";
-
-        dots_text_format = "*";
-        dots_size = 0.8;
-        dots_spacing = 0.3;
-
-        position = "0, 0";
-        halign = "center";
-        valign = "center";
-      };
-    };
-  };
+  # programs.hyprlock = {
+  #   enable = true;
+  #   settings = {
+  #     general = {
+  #       hide_cursor = true;
+  #       ignore_empty_input = true;
+  #     };
+  #     animations = {
+  #       enabled = true;
+  #     };
+  #     input-field = {
+  #       monitor = "";
+  #       size = "20%, 5%";
+  #       outline_thickness = 0;
+  #       inner_color = "rgba(0, 0, 0, 0)";
+  #       font_color = "rgb(FFFFFF)";
+  #       fade_on_empty = false;
+  #       rounding = 0;
+  #
+  #       font_family = "";
+  #       placeholder_text = "";
+  #       fail_text = "";
+  #
+  #       dots_text_format = "*";
+  #       dots_size = 0.8;
+  #       dots_spacing = 0.3;
+  #
+  #       position = "0, 0";
+  #       halign = "center";
+  #       valign = "center";
+  #     };
+  #   };
+  # };
 
   programs.kitty = {
     enable = true;

@@ -10,7 +10,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    # ./home.nix
+    ./dod.nix
   ];
 
   # Bootloader.
@@ -62,6 +62,8 @@
     polkit.enable = true;
     pam.services.hyprlock.enable = true;
   };
+
+  programs.hyprlock.enable = true;
   
   services = {
     xserver.xkb = {
@@ -76,7 +78,6 @@
     udisks2.enable = true;
     devmon.enable = true;
     gnome.gnome-keyring.enable = true;
-    fprintd.enable = true;
     playerctld.enable = true;
     openssh.enable = true;      
     udev.packages = with pkgs; [
@@ -120,6 +121,16 @@
         where-is-my-sddm-theme
 	kdePackages.qt5compat
       ];
+    };
+
+    pcscd.enable = true;
+
+    fprintd = {
+      enable = true;
+      tod = {
+        enable = true;
+	driver = pkgs.libfprint-2-tod1-goodix;
+      };
     };
   };
 
@@ -291,7 +302,8 @@
 
   programs.starship.enable = true;
   programs.bash.enable = true;
-  programs.zsh.enable = true;
+  # programs.bash.blesh.enable = true;
+  # programs.zsh.enable = true;
 
   virtualisation.docker.enable = true;
   # virtualisation.podman.enable = true;
@@ -398,6 +410,7 @@
     wev
     geteduroam
     shellcheck
+    fff
 
     # languages
     python3
@@ -418,7 +431,6 @@
     waybar
     quickshell
     hyprshot
-    hyprlock
     hyprpicker
     hypridle
     libnotify
@@ -482,6 +494,11 @@
     # communication
     telegram-desktop
     pkgsMain.stoat-desktop
+
+    pcsclite
+    pcsc-tools
+    opensc
+    cacert
   ];
 
   environment.shellAliases = {

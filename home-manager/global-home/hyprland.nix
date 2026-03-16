@@ -24,7 +24,6 @@ in
         "systemctl --user start hyprpolkitagent1"
         "ibus-daemon -rxRd"
 	"hyprpaper"
-        # "hyprctl setcursor '${cursor.name}' ${builtins.toString cursor.size}"
       ];
 
       general = {
@@ -87,16 +86,14 @@ in
         "$mod, RETURN, exec, $terminal"
         "$mod, W, killactive, "
         "$mod SHIFT, escape, exit, "
-        "$mod, E, exec, $fileManager"
+        "$mod, E, exec, $filemanager"
         "$mod, V, togglefloating,"
         "$mod, F, fullscreen, 0"
         "$mod, M, fullscreen, 1"
         "$mod, space, exec, $menu"
-        "$mod, O, pseudo, # dwindle"
-        "$mod, T, togglesplit, # dwindle"
         "$mod, B, exec, ~/Scripts/earbuds_toggle.sh"
         "$mod, Q, exec, kitten quick-access-terminal"
-        "$mod, escape, exec, hyprlock"
+        "$mod, escape, exec, qs -c ~/.config/quickshell/lock/"
         "$mod, PERIOD, exec, hyprctl dispatch dpms toggle"
 
         #workspaces

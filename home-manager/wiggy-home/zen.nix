@@ -1,21 +1,37 @@
 { inputs, pkgs, ... }:
 let
-  locked = "locked";
-  lock-false = {
-    Value = false;
-    Status = locked;
-  };
-  lock-true = {
-    Value = true;
-    Status = locked;
-  };
+  mkLockedAttrs = builtins.mapAttrs (_: value: {
+    Value = value;
+    Status = "locked";
+  });
+
+  mkPluginUrl = id: "https://addons.mozilla.org/firefox/downloads/latest/${id}/latest.xpi";
+
+  mkExtensionEntry = {
+    id,
+    pinned ? false,
+  }: let
+    base = {
+      install_url = mkPluginUrl id;
+      installation_mode = "force_installed";
+    };
+  in
+    if pinned
+    then base // {default_area = "navbar";}
+    else base;
+
+  mkExtensionSettings = builtins.mapAttrs (_: entry:
+    if builtins.isAttrs entry
+    then entry
+    else mkExtensionEntry {id = entry;});
 in
 {
   imports = [
-    inputs.zen-browser.homeModules.twilight
+    inputs.zen-browser.homeModules.beta
   ];
   programs.zen-browser = {
     enable = true;
+    suppressXdgMigrationWarning = true;
 
     nativeMessagingHosts = [ pkgs.firefoxpwa ];
 
@@ -38,49 +54,31 @@ in
         Fingerprinting = true;
       };
 
-      profiles."Default".settings = {
-        "zen.urlbar.replace-newtab" = lock-false;
-        "zen.glance.enabled" = lock-true;
-        "zen.mods.no-sidebar-scrollbar" = lock-true;
-        "zen.mods.ghost-tabs" = lock-true;
-        "zen.site-data-panel.show-callout" = lock-false;
-        "zen.swipe.is-fast-swipe" = lock-true;
-        "zen.view.compact.enable-at-startup" = lock-true;
-        "zen.view.use-single-toolbar" = lock-false;
-        "zen.tabs.show-newtab-vertical" = lock-false;
-        "zen.browser.tabs.closeWindowWithLastTab" = lock-true;
-        "zen.view.experimental-no-window-controls" = lock-true;
-        "zen.view.hide-window-controls" = lock-true;
-        "zen.urlbar.behavior" = {
-          Value = "floating-on-type";
-          Status = locked;
+      ExtensionSettings = mkExtensionSettings {
+        "uBlock0@raymondhill.net" = mkExtensionEntry {
+          id = "ublock-origin";
+          pinned = true;
         };
-        "sidebar.visibility" = {
-          Value = "hide-sidebar";
-          Status = locked;
-        };
-        "zen.theme.gradient.show-custom-colors" = lock-true;
-        "zen.theme.widget.linux.transparency" = lock-true;
-        "zen.theme.dim-pending" = lock-true;
-        # "browser.gesture.swipe.left" = { "cmd_scrollLeft" "locked" };
-        # "browser.gesture.swipe.Right" = { "cmd_scrollRight" "locked" };
+        "{74145f27-f039-47ce-a470-a662b129930a}" = "clearurls";
+        "firefox-extension@steamdb.info" = "steam-database";
       };
 
-
-      ExtensionSettings = {
-        "uBlock0@raymondhill.net" = {
-          # ublock
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-          installation_mode = "force_installed";
-        };
-      };
-
-      Preferences = {
-        "browser.ml.enable" = lock-false;
-        "browser.warnOnQuitShortcut" = lock-true;
-        "browser.ctrlTab.sortByRecentlyUsed" = lock-false;
-        "media.videocontrols.picture-in-picture.video-toggle.enabled" = lock-false;
+      Preferences = mkLockedAttrs {
+        "browser.aboutConfig.showWarning" = false;
+        "browser.gesture.swipe.left" = "scrollLeft";
+        "browser.gesture.swipe.right" = "scrollRight";
+        "browser.tabs.inTitlebar" = 0;
+        "zen.welcome-screen.seen" = true;
       };
     };
+
+    profiles.default = {
+      mods = [
+        "1b88a6d1-d931-45e8-b6c3-bfdca2c7e9d6" # Remove Tab X
+        "c01d3e22-1cee-45c1-a25e-53c0f180eea8" # Ghost Tabs
+        "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar
+      ];
+    };
+
   };
 }
