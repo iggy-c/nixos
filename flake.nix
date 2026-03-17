@@ -3,13 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    # nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
     nixpkgs-main.url = "github:nixos/nixpkgs/master";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    
+    # work
+    claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
+    claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =

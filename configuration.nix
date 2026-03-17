@@ -140,6 +140,11 @@
     extraPortals = [pkgs.xdg-desktop-portal-gtk ];
   };
 
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "kitty";
+  };
+
   # Power management
   # Disable if devices take long to unsuspend (keyboard, mouse, etc)
   powerManagement.powertop.enable = true;
@@ -464,7 +469,10 @@
     freecad
     kicad
     iverilog
+    quartus-prime-lite
     typst
+    kitty
+    nautilus
 
     # video
     vlc

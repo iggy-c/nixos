@@ -38,8 +38,7 @@ in
       };
 
       env = [
-        # "XCURSOR_SIZE,${builtins.toString cursor.size}"
-        # "HYPRCURSOR_SIZE,${builtins.toString cursor.size}"
+        "TERMINAL, kitty"
         # "ELECTRON_OZONE_PLATFORM_HINT,wayland"
       ];
 
@@ -78,8 +77,8 @@ in
 
       "$mod" = "SUPER";
       "$terminal" = "kitty";
-      "$filemanager" = "dolphin";
-      "$menu" = "rofi -show drun";
+      "$filemanager" = "nautilus";
+      "$menu" = "rofi -modes \"drun,ssh,filebrowser,window\" -show drun";
 
       bind = [
         # main keybinds

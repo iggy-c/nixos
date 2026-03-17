@@ -10,6 +10,10 @@ in
 {
   programs.home-manager.enable = true;
 
+  home.sessionVariables = {
+    TERMINAL = "kitty";
+  };
+
   programs.readline = {
     enable = true;
     extraConfig = "set completion-ignore-case on";
