@@ -1,14 +1,7 @@
-{ pkgs, inputs, ... }:
-let 
-  system = pkgs.stdenv.hostPlatform.system;
-
-in
+{ pkgs, ... }:
 {
-  home.packages = [
-    inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
-  ];
-
   imports = [
+    ./claude.nix
     ./programs.nix
     ./zen.nix
   ];

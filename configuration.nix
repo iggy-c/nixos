@@ -126,14 +126,16 @@
 
     pcscd.enable = true;
 
-    fprintd = {
-      enable = true;
-      tod = {
-        enable = true;
-	driver = pkgs.libfprint-2-tod1-goodix;
-      };
-    };
-  };
+# disabled until there is a fix for password getting disabled
+# https://github.com/NixOS/nixpkgs/issues/171136
+#    fprintd = {
+#      enable = true;
+#      tod = {
+#        enable = true;
+# driver = pkgs.libfprint-2-tod1-goodix;
+#      };
+#    };
+#  };
 
   xdg.portal = {
     enable = true;
@@ -293,6 +295,7 @@
     xwayland.enable = true;
   };
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  programs.dwl.enable = true;
 
   programs.git = {
     enable = true;
@@ -510,6 +513,11 @@
     pcsc-tools
     opensc
     cacert
+    omnissa-horizon-client
+
+    # dwl
+    wmenu
+    foot
   ];
 
   environment.shellAliases = {
