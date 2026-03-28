@@ -93,7 +93,7 @@ in
         "$mod, B, exec, ~/Scripts/earbuds_toggle.sh"
         "$mod, Q, exec, kitten quick-access-terminal"
         "$mod, escape, exec, qs -c ~/.config/quickshell/lock/"
-        "$mod, PERIOD, exec, hyprctl dispatch dpms toggle"
+        "$mod, PERIOD, exec, rofi -modi emoji -show emoji"
 
         #workspaces
         # Move focus with mod + arrow keys"

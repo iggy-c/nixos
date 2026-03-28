@@ -31,7 +31,6 @@ in
   ];
   programs.zen-browser = {
     enable = true;
-    suppressXdgMigrationWarning = true;
 
     nativeMessagingHosts = [ pkgs.firefoxpwa ];
 

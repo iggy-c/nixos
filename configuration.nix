@@ -40,10 +40,12 @@
     "flakes"
   ];
 
-  swapDevices = [{
-    device = "/swapfile";
-    size = 16 * 1024; # 16GB
-  }];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 16 * 1024; # 16GB
+    }
+  ];
 
   time.timeZone = "America/Chicago";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -65,7 +67,7 @@
   };
 
   programs.hyprlock.enable = true;
-  
+
   services = {
     xserver.xkb = {
       layout = "us";
@@ -80,7 +82,7 @@
     devmon.enable = true;
     gnome.gnome-keyring.enable = true;
     playerctld.enable = true;
-    openssh.enable = true;      
+    openssh.enable = true;
     udev.packages = with pkgs; [
       platformio-core
     ];
@@ -120,26 +122,25 @@
       package = pkgs.kdePackages.sddm;
       extraPackages = with pkgs; [
         where-is-my-sddm-theme
-	kdePackages.qt5compat
+        kdePackages.qt5compat
       ];
     };
 
     pcscd.enable = true;
 
-# disabled until there is a fix for password getting disabled
-# https://github.com/NixOS/nixpkgs/issues/171136
-#    fprintd = {
-#      enable = true;
-#      tod = {
-#        enable = true;
-# driver = pkgs.libfprint-2-tod1-goodix;
-#      };
-#    };
-#  };
+    # disabled until there is a fix for password getting disabled https://github.com/NixOS/nixpkgs/issues/171136
+    fprintd = {
+      enable = true;
+      tod = {
+        enable = true;
+        driver = pkgs.libfprint-2-tod1-goodix;
+      };
+    };
+  };
 
   xdg.portal = {
     enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
   programs.nautilus-open-any-terminal = {
@@ -334,7 +335,7 @@
 
   # nix ld
   programs.nix-ld = {
-    enable = true;
+    enable = false;
     # libraries = with pkgs; [
     #
     # ]
@@ -474,14 +475,16 @@
     iverilog
     quartus-prime-lite
     typst
+    zathura
     kitty
     nautilus
+    prusa-slicer
 
     # video
     vlc
     handbrake
     ffmpeg
-    
+
     # sound
     rmpc
     spotify
@@ -503,10 +506,12 @@
     # code editors
     zed-editor
     vscode-fhs
+    arduino-ide
 
     # communication
     telegram-desktop
-    pkgsMain.stoat-desktop
+    # pkgsMain.stoat-desktop #needs updated electron
+    bluebubbles
 
     # dod
     pcsclite
@@ -539,6 +544,7 @@
     icat = "kitten icat";
     config = "sudoedit /etc/nixos/configuration.nix";
     se = "sudoedit";
+    wipedocker = "docker stop $(docker ps -aq); docker system prune -a; docker volume prune -a";
   };
 
   # This value determines the NixOS release from which the default

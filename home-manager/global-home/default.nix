@@ -118,10 +118,12 @@ in
   programs.rofi = {
     enable = true;
     theme = "gruvbox-dark-soft";
+    plugins = [pkgs.rofi-emoji];
   };
 
   imports = [
-    ./neovim.nix
+    # ./emoji.nix
     ./hyprland.nix
+    ./neovim.nix
   ];
 }
