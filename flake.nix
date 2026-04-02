@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs";
     nixpkgs-main.url = "github:nixos/nixpkgs/master";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -19,6 +20,7 @@
   outputs =
     {
       nixpkgs,
+      nixpkgs-unstable,
       nixpkgs-main,
       home-manager,
       ...
@@ -26,6 +28,12 @@
     {
       nixosConfigurations.iggy-laptop = nixpkgs.lib.nixosSystem {
         specialArgs = {
+	  pkgsUnstable = import nixpkgs-unstable { 
+	    system = "x86_64-linux"; 
+	    config = {
+	      allowUnfree = true;
+	    };
+	  }; 
 	  pkgsMain = import nixpkgs-main { 
 	    system = "x86_64-linux"; 
 	    config = {

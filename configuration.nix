@@ -2,6 +2,7 @@
   config,
   pkgs,
   pkgsRocmCuda,
+  pkgsUnstable,
   pkgsMain,
   ...
 }:
@@ -265,6 +266,7 @@
         keepassxc
         dbeaver-bin
         goose-cli
+	pkgsUnstable.liteparse
       ];
     };
   };
