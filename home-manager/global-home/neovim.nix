@@ -30,6 +30,9 @@
         render-markdown-nvim
 
         nvim-treesitter.withAllGrammars
+
+	nvim-colorizer-lua
+
       ];
 
       extraConfig = ''
@@ -43,6 +46,7 @@
 	vim.o.background = "dark"
         vim.g.gruvbox_background = "soft"
         vim.cmd("colorscheme gruvbox")
+	require'colorizer'.setup()
       '';
 
       coc = {

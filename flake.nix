@@ -11,10 +11,12 @@
     };
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
-    
+
     # work
     claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
     claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
+    docling.url = "path:/home/wiggy/docling";
+    docling.inputs.nixpkgs.follows = "nixpkgs-unstable"; # docling needs unstable
   };
 
   outputs =
@@ -23,23 +25,21 @@
       nixpkgs-unstable,
       nixpkgs-main,
       home-manager,
+      docling,
       ...
     }@inputs:
     {
       nixosConfigurations.iggy-laptop = nixpkgs.lib.nixosSystem {
         specialArgs = {
-	  pkgsUnstable = import nixpkgs-unstable { 
-	    system = "x86_64-linux"; 
-	    config = {
-	      allowUnfree = true;
-	    };
-	  }; 
-	  pkgsMain = import nixpkgs-main { 
-	    system = "x86_64-linux"; 
-	    config = {
-	      allowUnfree = true;
-	    };
-	  }; 
+          inherit inputs;
+          pkgsUnstable = import nixpkgs-unstable {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+          pkgsMain = import nixpkgs-main {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
           pkgsRocmCuda = import nixpkgs {
             system = "x86_64-linux";
             config = {
@@ -60,10 +60,17 @@
             home-manager.users.iggy = ./home-manager/iggy-home;
             home-manager.users.wiggy = ./home-manager/wiggy-home;
           }
+	  {
+	  nixpkgs.overlays = [
+            (final: prev: {
+              quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
+                version = "20.1.0.711";
+                # hashes inline here
+              });
+            })
+          ];
+	}
         ];
-        specialArgs = {
-          inherit inputs;
-        };
       };
     };
 }

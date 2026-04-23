@@ -88,6 +88,10 @@
       platformio-core
     ];
 
+    upower = {
+      enable = true;
+    };
+
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -131,7 +135,7 @@
 
     # disabled until there is a fix for password getting disabled https://github.com/NixOS/nixpkgs/issues/171136
     fprintd = {
-      enable = true;
+      enable = false;
       tod = {
         enable = true;
         driver = pkgs.libfprint-2-tod1-goodix;
@@ -247,6 +251,7 @@
       packages = with pkgs; [
         gh
         prismlauncher
+    kdePackages.kpat
       ];
     };
     wiggy = {
@@ -262,11 +267,16 @@
       ];
       packages = with pkgs; [
         pkgsMain.code-cursor
-        claude-code
         keepassxc
         dbeaver-bin
         goose-cli
 	pkgsUnstable.liteparse
+	awscli2
+	nodejs_24
+	tilt
+	kubectl
+	kind
+	kubernetes-helm
       ];
     };
   };
@@ -337,7 +347,7 @@
 
   # nix ld
   programs.nix-ld = {
-    enable = false;
+    enable = true;
     # libraries = with pkgs; [
     #
     # ]
@@ -426,7 +436,6 @@
 
     # languages
     python3
-    nodejs_22
     clang-tools
     clang
     cargo
@@ -469,18 +478,20 @@
     inav-configurator
     mission-planner
     libreoffice-qt-fresh
+    onlyoffice-desktopeditors
     qdirstat
     gimp
     rivalcfg
     freecad
     kicad
     iverilog
-    quartus-prime-lite
+    # quartus-prime-lite
     typst
     zathura
     kitty
     nautilus
     prusa-slicer
+    pkgsUnstable.feedr
 
     # video
     vlc
@@ -497,6 +508,7 @@
     qemu
     quickemu
     virt-manager
+    distrobox
 
     # file sharing
     copyparty
@@ -521,6 +533,7 @@
     opensc
     cacert
     omnissa-horizon-client
+    claude-code
 
     # dwl
     wmenu
@@ -531,6 +544,7 @@
     sudo = "sudo ";
     ssh = "kitten ssh";
     rs = "nh os switch /etc/nixos/";
+    srs = "sudo nixos-rebuild switch";
     # rt = "nixos-rebuild test";
     ls = "eza";
     la = "eza -a";
@@ -547,6 +561,8 @@
     config = "sudoedit /etc/nixos/configuration.nix";
     se = "sudoedit";
     wipedocker = "docker stop $(docker ps -aq); docker system prune -a; docker volume prune -a";
+    killalldocker = "docker ps -aq | xargs docker rm -f";
+    note = "nvim ~/Documents/notes/\$(date +%F).md";
   };
 
   # This value determines the NixOS release from which the default

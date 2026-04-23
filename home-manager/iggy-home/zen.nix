@@ -68,6 +68,8 @@ in
         "browser.gesture.swipe.right" = "scrollRight";
         "browser.tabs.inTitlebar" = 0;
         "zen.welcome-screen.seen" = true;
+	"zen.splitView.enable-tab-drop" = false;
+	"zen.splitView.enable-drag-over-split" = false;
       };
     };
 

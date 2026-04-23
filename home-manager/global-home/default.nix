@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   cursor-name = "Bibata-Modern-Ice";
   cursor-pkg = pkgs.bibata-cursors;
@@ -119,6 +119,30 @@ in
     enable = true;
     theme = "gruvbox-dark-soft";
     plugins = [pkgs.rofi-emoji];
+  };
+
+  programs = {
+    git = {
+      enable = true;
+      settings = {
+        credential = {
+          helper = "${pkgs.git-credential-manager}/bin/git-credential-manager";
+          credentialStore = "gpg";
+        };
+      };
+    };
+  };
+
+  programs.gpg.enable = true;
+  services.gpg-agent = {
+    enable = true;
+    defaultCacheTtl = 3600;
+    maxCacheTtl = 86400;
+    pinentry.package = pkgs.pinentry-curses;
+  };
+  programs.password-store = {
+    enable = true;
+    settings.PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.local/share/pass";
   };
 
   imports = [
