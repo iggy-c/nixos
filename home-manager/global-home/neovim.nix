@@ -14,7 +14,7 @@
 
       plugins = with pkgs.vimPlugins; [
         # theme
-	gruvbox
+        gruvbox
 
         # web
         coc-html
@@ -27,26 +27,26 @@
         coc-json
         coc-docker
         coc-git
-        render-markdown-nvim
 
         nvim-treesitter.withAllGrammars
 
-	nvim-colorizer-lua
+        nvim-colorizer-lua
 
       ];
 
       extraConfig = ''
-        set ai
-	set cursorline
-	set number
-	set wildmode=longest,list
+                set ai
+        	set cursorline
+        	set number
+        	set wildmode=longest,list
+        	set tabstop=4
       '';
 
       extraLuaConfig = ''
-	vim.o.background = "dark"
-        vim.g.gruvbox_background = "soft"
-        vim.cmd("colorscheme gruvbox")
-	require'colorizer'.setup()
+        	vim.o.background = "dark"
+                vim.g.gruvbox_background = "soft"
+                vim.cmd("colorscheme gruvbox")
+        	require'colorizer'.setup()
       '';
 
       coc = {
@@ -66,6 +66,7 @@
               command = "nil";
               args = [ ];
               filetypes = [ "nix" ];
+              settings.nil.nix.flake.autoArchive = true;
             };
           };
           coc.preferences.formatOnType = true;

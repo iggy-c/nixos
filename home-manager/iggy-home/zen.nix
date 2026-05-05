@@ -1,29 +1,30 @@
 { inputs, pkgs, ... }:
 let
-  mkLockedAttrs = builtins.mapAttrs (_: value: {
-    Value = value;
-    Status = "locked";
-  });
+  mkLockedAttrs = builtins.mapAttrs (
+    _: value: {
+      Value = value;
+      Status = "locked";
+    }
+  );
 
   mkPluginUrl = id: "https://addons.mozilla.org/firefox/downloads/latest/${id}/latest.xpi";
 
-  mkExtensionEntry = {
-    id,
-    pinned ? false,
-  }: let
-    base = {
-      install_url = mkPluginUrl id;
-      installation_mode = "force_installed";
-    };
-  in
-    if pinned
-    then base // {default_area = "navbar";}
-    else base;
+  mkExtensionEntry =
+    {
+      id,
+      pinned ? false,
+    }:
+    let
+      base = {
+        install_url = mkPluginUrl id;
+        installation_mode = "force_installed";
+      };
+    in
+    if pinned then base // { default_area = "navbar"; } else base;
 
-  mkExtensionSettings = builtins.mapAttrs (_: entry:
-    if builtins.isAttrs entry
-    then entry
-    else mkExtensionEntry {id = entry;});
+  mkExtensionSettings = builtins.mapAttrs (
+    _: entry: if builtins.isAttrs entry then entry else mkExtensionEntry { id = entry; }
+  );
 in
 {
   imports = [
@@ -68,8 +69,6 @@ in
         "browser.gesture.swipe.right" = "scrollRight";
         "browser.tabs.inTitlebar" = 0;
         "zen.welcome-screen.seen" = true;
-	"zen.splitView.enable-tab-drop" = false;
-	"zen.splitView.enable-drag-over-split" = false;
       };
     };
 

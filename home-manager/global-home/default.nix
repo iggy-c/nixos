@@ -19,16 +19,6 @@ in
     extraConfig = "set completion-ignore-case on";
   };
 
-  programs.bash = {
-    enable = true;
-    bashrcExtra = ''
-      fff() {
-        command fff "$@"
-        cd "$(cat "''${XDG_CACHE_HOME:=''${HOME}/.cache}/fff/.fff_d")"
-      }
-    '';
-  };
-
   home.pointerCursor = {
     enable = true;
     hyprcursor.enable = true;
@@ -110,15 +100,15 @@ in
     font.name = font-name;
     font.size = 12;
     quickAccessTerminalConfig = {
-	lines = 5;
-	background_opacity = 0.9;
+      lines = 5;
+      background_opacity = 0.9;
     };
   };
 
   programs.rofi = {
     enable = true;
     theme = "gruvbox-dark-soft";
-    plugins = [pkgs.rofi-emoji];
+    plugins = [ pkgs.rofi-emoji ];
   };
 
   programs = {
@@ -146,6 +136,7 @@ in
   };
 
   imports = [
+    ./bash.nix
     # ./emoji.nix
     ./hyprland.nix
     ./neovim.nix

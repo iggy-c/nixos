@@ -11,12 +11,11 @@
     };
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
 
     # work
     claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
     claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
-    docling.url = "path:/home/wiggy/docling";
-    docling.inputs.nixpkgs.follows = "nixpkgs-unstable"; # docling needs unstable
   };
 
   outputs =
@@ -25,10 +24,12 @@
       nixpkgs-unstable,
       nixpkgs-main,
       home-manager,
-      docling,
+      treefmt-nix,
       ...
     }@inputs:
     {
+      formatter.x86_64-linux = treefmt-nix.lib.mkWrapper nixpkgs.legacyPackages.x86_64-linux ./treefmt.nix;
+
       nixosConfigurations.iggy-laptop = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
@@ -60,16 +61,16 @@
             home-manager.users.iggy = ./home-manager/iggy-home;
             home-manager.users.wiggy = ./home-manager/wiggy-home;
           }
-	  {
-	  nixpkgs.overlays = [
-            (final: prev: {
-              quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
-                version = "20.1.0.711";
-                # hashes inline here
-              });
-            })
-          ];
-	}
+          {
+            nixpkgs.overlays = [
+              (final: prev: {
+                quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
+                  version = "20.1.0.711";
+                  # hashes inline here
+                });
+              })
+            ];
+          }
         ];
       };
     };

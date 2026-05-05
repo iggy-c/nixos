@@ -21,9 +21,9 @@ in
       exec-once = [
         "waybar"
         "mako"
-        "systemctl --user start hyprpolkitagent1"
+        "systemctl --user start hyprpolkitagent"
         "ibus-daemon -rxRd"
-	"hyprpaper"
+        "hyprpaper"
       ];
 
       general = {
@@ -101,7 +101,7 @@ in
         "$mod, right, movefocus, r"
         "$mod, up, movefocus, u"
         "$mod, down, movefocus, d"
-	# Move focus with mod + shift + vim keybinds"
+        # Move focus with mod + shift + vim keybinds"
         "$mod CTRL, H, movefocus, l"
         "$mod CTRL, L, movefocus, r"
         "$mod CTRL, K, movefocus, u"

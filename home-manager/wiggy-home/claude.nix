@@ -1,5 +1,5 @@
 { pkgs, inputs, ... }:
-let 
+let
   system = pkgs.stdenv.hostPlatform.system;
 
 in

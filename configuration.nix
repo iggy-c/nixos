@@ -18,12 +18,14 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernel.sysctl."kernel.sysrq" = 1;
+  boot.blacklistedKernelModules = [ "algif_aead" ]; # patch vuln
 
   boot.extraModulePackages = with config.boot.kernelPackages; [
     v4l2loopback
   ];
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+    install algif_aead /bin/false
   '';
 
   networking.hostName = "iggy-laptop"; # Define your hostname.
@@ -124,6 +126,7 @@
       enable = true;
       autoNumlock = true;
       theme = "where_is_my_sddm_theme";
+      wayland.enable = true;
       package = pkgs.kdePackages.sddm;
       extraPackages = with pkgs; [
         where-is-my-sddm-theme
@@ -251,7 +254,7 @@
       packages = with pkgs; [
         gh
         prismlauncher
-    kdePackages.kpat
+        kdePackages.kpat
       ];
     };
     wiggy = {
@@ -270,13 +273,12 @@
         keepassxc
         dbeaver-bin
         goose-cli
-	pkgsUnstable.liteparse
-	awscli2
-	nodejs_24
-	tilt
-	kubectl
-	kind
-	kubernetes-helm
+        pkgsUnstable.liteparse
+        awscli2
+        nodejs_24
+        tilt
+        kubectl
+        kubernetes-helm
       ];
     };
   };
@@ -310,25 +312,16 @@
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   programs.dwl.enable = true;
 
-  programs.git = {
-    enable = true;
-    config = {
-      user.name = "iggy";
-      user.email = "bcus9126@gmail.com";
-      init.defaultBranch = "main";
-      diff.tool = "vimdiff";
-      merge.tool = "vimdiff";
-      difftool.prompt = "false";
-    };
-  };
-
   programs.starship.enable = true;
   programs.bash.enable = true;
-  # programs.bash.blesh.enable = true;
   # programs.zsh.enable = true;
 
-  virtualisation.docker.enable = true;
-  # virtualisation.podman.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings = {
+      insecure-registries = [ "192.168.1.101:5000" ]; # work cluster
+    };
+  };
   virtualisation.libvirtd = {
     enable = true;
     qemu.swtpm.enable = true;
@@ -454,6 +447,7 @@
     hyprshot
     hyprpicker
     hypridle
+    hyprmon
     libnotify
     kdePackages.kio-admin
     kdePackages.systemsettings
@@ -472,7 +466,6 @@
     # apps
     kdePackages.gwenview
     kdePackages.kdenlive
-    kdePackages.okular
     kdePackages.partitionmanager
     kdePackages.kcalc
     inav-configurator
@@ -491,17 +484,20 @@
     kitty
     nautilus
     prusa-slicer
-    pkgsUnstable.feedr
+    hyprpolkitagent
 
     # video
     vlc
     handbrake
     ffmpeg
+    yt-dlp
 
     # sound
     rmpc
     spotify
-    audacious
+    rhythmbox
+    picard
+    fmodex
 
     # virtualisation
     gnome-boxes
@@ -539,31 +535,6 @@
     wmenu
     foot
   ];
-
-  environment.shellAliases = {
-    sudo = "sudo ";
-    ssh = "kitten ssh";
-    rs = "nh os switch /etc/nixos/";
-    srs = "sudo nixos-rebuild switch";
-    # rt = "nixos-rebuild test";
-    ls = "eza";
-    la = "eza -a";
-    li = "eza --icons";
-    ll = "eza -l";
-    numlock_toggle = ''
-      	  evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 1 --sync; evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 0 --sync
-        	'';
-    blackhawk = "ssh bc1054@blackhawk.ece.uah.edu";
-    todo = "nvim ~/Documents/todo.md";
-    miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
-    sreboot = "systemctl reboot -i";
-    icat = "kitten icat";
-    config = "sudoedit /etc/nixos/configuration.nix";
-    se = "sudoedit";
-    wipedocker = "docker stop $(docker ps -aq); docker system prune -a; docker volume prune -a";
-    killalldocker = "docker ps -aq | xargs docker rm -f";
-    note = "nvim ~/Documents/notes/\$(date +%F).md";
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
