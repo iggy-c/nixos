@@ -1,13 +1,11 @@
-{ pkgs, ... }:
-
-let
+{pkgs, ...}: let
   dodCerts = pkgs.fetchzip {
     url = "https://militarycac.com/maccerts/AllCerts.zip";
     sha256 = "14zxx2cpjzfjhfzx699vn9i2wi2wsi1d5768n9gvqxl3fpipivvf";
     stripRoot = false;
   };
 
-  dodCertBundle = pkgs.runCommand "dod-certs" { buildInputs = [ pkgs.openssl ]; } ''
+  dodCertBundle = pkgs.runCommand "dod-certs" {buildInputs = [pkgs.openssl];} ''
     for cert in ${dodCerts}/*.cer; do
       if ${pkgs.gnugrep}/bin/grep -q "BEGIN CERTIFICATE" "$cert" 2>/dev/null; then
         cat "$cert"
@@ -16,7 +14,6 @@ let
       fi
     done > $out
   '';
-in
-{
-  security.pki.certificateFiles = [ dodCertBundle ];
+in {
+  security.pki.certificateFiles = [dodCertBundle];
 }

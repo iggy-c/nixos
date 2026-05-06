@@ -5,11 +5,8 @@
   pkgsUnstable,
   pkgsMain,
   ...
-}:
-
-{
+}: {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./dod.nix
   ];
@@ -18,7 +15,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernel.sysctl."kernel.sysrq" = 1;
-  boot.blacklistedKernelModules = [ "algif_aead" ]; # patch vuln
+  boot.blacklistedKernelModules = ["algif_aead"]; # patch vuln
 
   boot.extraModulePackages = with config.boot.kernelPackages; [
     v4l2loopback
@@ -28,14 +25,8 @@
     install algif_aead /bin/false
   '';
 
-  networking.hostName = "iggy-laptop"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "iggy-laptop";
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
   networking.networkmanager.enable = true;
 
   nix.settings.experimental-features = [
@@ -122,44 +113,21 @@
       '';
     };
 
-    displayManager.sddm = {
-      enable = true;
-      autoNumlock = true;
-      theme = "where_is_my_sddm_theme";
-      wayland.enable = true;
-      package = pkgs.kdePackages.sddm;
-      extraPackages = with pkgs; [
-        where-is-my-sddm-theme
-        kdePackages.qt5compat
-      ];
-    };
-
-    pcscd.enable = true;
-
-    # disabled until there is a fix for password getting disabled https://github.com/NixOS/nixpkgs/issues/171136
-    fprintd = {
-      enable = false;
-      tod = {
+    displayManager = {
+      defaultSession = "hyprland";
+      sddm = {
         enable = true;
-        driver = pkgs.libfprint-2-tod1-goodix;
+        autoNumlock = true;
+        theme = "where_is_my_sddm_theme";
+        wayland.enable = true;
+        package = pkgs.kdePackages.sddm;
+        extraPackages = with pkgs; [
+          kdePackages.qt5compat
+        ];
       };
     };
-  };
+    pcscd.enable = true;
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
-
-  programs.nautilus-open-any-terminal = {
-    enable = true;
-    terminal = "kitty";
-  };
-
-  # Power management
-  # Disable if devices take long to unsuspend (keyboard, mouse, etc)
-  powerManagement.powertop.enable = true;
-  services = {
     power-profiles-daemon.enable = false;
     tlp = {
       enable = true;
@@ -168,12 +136,33 @@
         CPU_BOOST_ON_BAT = 0;
         CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-        STOP_CHARGE_THRESH_BAT0 = 80;
+        START_CHARGE_THRESH_BAT0 = 0;
+        STOP_CHARGE_THRESH_BAT0 = 100;
       };
     };
   };
 
-  #nvidia shit
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    config = {
+      hyprland = {
+        default = [
+          "hyprland"
+          "gtk"
+        ];
+        "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
+      };
+    };
+  };
+
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "kitty";
+  };
+
+  powerManagement.powertop.enable = true;
+
   hardware.graphics = {
     enable = true;
   };
@@ -198,7 +187,6 @@
     "nvidia"
   ];
 
-  # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
@@ -207,7 +195,7 @@
     powerOnBoot = true;
     settings = {
       General = {
-        Experimental = true; # shows battery level
+        Experimental = true;
         FastConnectable = true;
       };
       Policy = {
@@ -220,9 +208,9 @@
     enableDefaultPackages = true;
     enableGhostscriptFonts = true;
     fontconfig.defaultFonts = {
-      serif = [ "Noto Serif" ];
-      sansSerif = [ "Noto Sans" ];
-      monospace = [ "FiraMono Nerd Font" ];
+      serif = ["Noto Serif"];
+      sansSerif = ["Noto Sans"];
+      monospace = ["FiraMono Nerd Font"];
     };
     packages = with pkgs; [
       nerd-fonts.fira-code
@@ -237,7 +225,7 @@
   hardware.steam-hardware.enable = true;
 
   # User groups
-  users.groups.nixusers = { };
+  users.groups.nixusers = {};
   # User accounts
   users.users = {
     iggy = {
@@ -310,16 +298,16 @@
     xwayland.enable = true;
   };
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables.TERMINAL = "kitty";
   programs.dwl.enable = true;
 
   programs.starship.enable = true;
   programs.bash.enable = true;
-  # programs.zsh.enable = true;
 
   virtualisation.docker = {
     enable = true;
     daemon.settings = {
-      insecure-registries = [ "192.168.1.101:5000" ]; # work cluster
+      insecure-registries = ["192.168.1.101:5000"];
     };
   };
   virtualisation.libvirtd = {
@@ -338,44 +326,15 @@
     enable = true;
   };
 
-  # nix ld
   programs.nix-ld = {
     enable = true;
-    # libraries = with pkgs; [
-    #
-    # ]
-    # uncomment above when using more packages
-    # https://wiki.nixos.org/wiki/Nix-ld
   };
 
-  home-manager = {
-    users.iggy =
-      { ... }:
-      {
-        home = {
-          username = "iggy";
-          homeDirectory = "/home/iggy";
-          stateVersion = "25.11";
-        };
-      };
-    users.wiggy =
-      { ... }:
-      {
-        home = {
-          username = "wiggy";
-          homeDirectory = "/home/wiggy";
-          stateVersion = "25.11";
-        };
-      };
-  };
-
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   services.flatpak.enable = true;
 
   environment.systemPackages = with pkgs; [
-
     # terminal tools
     wget
     caligula
@@ -404,7 +363,7 @@
     unzip
     unrar
     imagemagick
-    rename # the perl one
+    rename
     lazydocker
     socat
     tio
@@ -413,7 +372,7 @@
     silver-searcher
     pwgen
     lsof
-    nixfmt-rfc-style
+    alejandra
     avrdude
     avrdudess
     libimobiledevice
@@ -426,6 +385,7 @@
     geteduroam
     shellcheck
     fff
+    stress-ng
 
     # languages
     python3
@@ -460,8 +420,14 @@
     bluez
     spice
     wl-clipboard
-    linuxKernel.packages.linux_zen.v4l2loopback
-    where-is-my-sddm-theme
+    (where-is-my-sddm-theme.override {
+      themeConfig.General = {
+        showUsersByDefault = true;
+        showSessionsByDefault = true;
+        hideCursor = true;
+        passwordAllowEmpty = true;
+      };
+    })
 
     # apps
     kdePackages.gwenview
@@ -478,7 +444,6 @@
     freecad
     kicad
     iverilog
-    # quartus-prime-lite
     typst
     zathura
     kitty
@@ -520,7 +485,6 @@
 
     # communication
     telegram-desktop
-    # pkgsMain.stoat-desktop #needs updated electron
     bluebubbles
 
     # dod
@@ -536,12 +500,5 @@
     foot
   ];
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11"; # Did you read the comment?
-
+  system.stateVersion = "25.11";
 }

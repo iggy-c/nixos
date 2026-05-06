@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   programs.vesktop = {
     enable = true;
     settings = {
@@ -69,5 +67,4 @@
       };
     };
   };
-
 }

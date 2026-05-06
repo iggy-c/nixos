@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   programs.git = {
     settings = {
       user = {
@@ -7,6 +6,7 @@
         name = "benjamin.cusack";
       };
       credential.gpgEncryptionKey = "8C5AEEA74F7C0737";
+      diff.tool = "nvimdiff";
     };
     includes = [
       {

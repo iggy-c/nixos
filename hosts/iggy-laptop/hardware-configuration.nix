@@ -7,9 +7,7 @@
   pkgs,
   modulesPath,
   ...
-}:
-
-{
+}: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -22,10 +20,10 @@
     "sd_mod"
     "rtsx_pci_sdmmc"
   ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.kernelParams = [ "nvidia_drm.modeset=1" ];
-  boot.extraModulePackages = [ ];
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = ["kvm-amd"];
+  boot.kernelParams = ["nvidia_drm.modeset=1"];
+  boot.extraModulePackages = [];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/8fe45d08-2438-4caa-a45f-60c79cf58a6f";
@@ -41,7 +39,7 @@
     ];
   };
 
-  swapDevices = [ ];
+  swapDevices = [];
 
   hardware.graphics.enable = true;
 

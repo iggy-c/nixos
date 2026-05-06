@@ -1,24 +1,17 @@
-{
-  pkgs,
-  ...
-}:
-
-let
-  wpctl = "${pkgs.hyprshot}/bin/hyprshot";
+{pkgs, ...}: let
   brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   rofi = "${pkgs.rofi}/bin/rofi";
   hyprshot = "${pkgs.hyprshot}/bin/hyprshot";
-in
-{
+in {
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
-
       monitor = [
         ", preferred, auto, auto"
       ];
 
       exec-once = [
+        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY"
         "waybar"
         "mako"
         "systemctl --user start hyprpolkitagent"
@@ -80,70 +73,68 @@ in
       "$filemanager" = "nautilus";
       "$menu" = "rofi -modes \"drun,ssh,filebrowser,window\" -show drun";
 
-      bind = [
-        # main keybinds
-        "$mod, RETURN, exec, $terminal"
-        "$mod, W, killactive, "
-        "$mod SHIFT, escape, exit, "
-        "$mod, E, exec, $filemanager"
-        "$mod, V, togglefloating,"
-        "$mod, F, fullscreen, 0"
-        "$mod, M, fullscreen, 1"
-        "$mod, space, exec, $menu"
-        "$mod, B, exec, ~/Scripts/earbuds_toggle.sh"
-        "$mod, Q, exec, kitten quick-access-terminal"
-        "$mod, escape, exec, qs -c ~/.config/quickshell/lock/"
-        "$mod, PERIOD, exec, rofi -modi emoji -show emoji"
+      bind =
+        [
+          # main keybinds
+          "$mod, RETURN, exec, $terminal"
+          "$mod, W, killactive, "
+          "$mod SHIFT, escape, exit, "
+          "$mod, E, exec, $filemanager"
+          "$mod, V, togglefloating,"
+          "$mod, F, fullscreen, 0"
+          "$mod, M, fullscreen, 1"
+          "$mod, space, exec, $menu"
+          "$mod, B, exec, ~/scripts/earbuds_toggle.sh"
+          "$mod, Q, exec, kitten quick-access-terminal"
+          "$mod, escape, exec, qs -c ~/.config/quickshell/lock/"
+          "$mod, PERIOD, exec, rofi -modi emoji -show emoji"
 
-        #workspaces
-        # Move focus with mod + arrow keys"
-        "$mod, left, movefocus, l"
-        "$mod, right, movefocus, r"
-        "$mod, up, movefocus, u"
-        "$mod, down, movefocus, d"
-        # Move focus with mod + shift + vim keybinds"
-        "$mod CTRL, H, movefocus, l"
-        "$mod CTRL, L, movefocus, r"
-        "$mod CTRL, K, movefocus, u"
-        "$mod CTRL, J, movefocus, d"
-        # Switch workspaces alias
-        "$mod, J, workspace, 1"
-        "$mod, K, workspace, 2"
-        "$mod, L, workspace, 3"
-        "$mod, SEMICOLON, workspace, 4"
-        "$mod, APOSTROPHE, workspace, 5"
-        # Move active window alias
-        "$mod SHIFT, J, movetoworkspace, 1"
-        "$mod SHIFT, K, movetoworkspace, 2"
-        "$mod SHIFT, L, movetoworkspace, 3"
-        "$mod SHIFT, SEMICOLON, movetoworkspace, 4"
-        "$mod SHIFT, APOSTROPHE, movetoworkspace, 5"
-        # Example special workspace (scratchpad)
-        "$mod, S, togglespecialworkspace, magic"
-        "$mod SHIFT, S, movetoworkspace, special:magic"
-        "$mod, P, submap, screenshot"
-      ]
-
-      ++ (
-        # workspaces
-        # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-        builtins.concatLists (
-          builtins.genList (
-            x:
-            let
-              ws =
-                let
+          #workspaces
+          # Move focus with mod + arrow keys"
+          "$mod, left, movefocus, l"
+          "$mod, right, movefocus, r"
+          "$mod, up, movefocus, u"
+          "$mod, down, movefocus, d"
+          # Move focus with mod + shift + vim keybinds"
+          "$mod CTRL, H, movefocus, l"
+          "$mod CTRL, L, movefocus, r"
+          "$mod CTRL, K, movefocus, u"
+          "$mod CTRL, J, movefocus, d"
+          # Switch workspaces alias
+          "$mod, J, workspace, 1"
+          "$mod, K, workspace, 2"
+          "$mod, L, workspace, 3"
+          "$mod, SEMICOLON, workspace, 4"
+          "$mod, APOSTROPHE, workspace, 5"
+          # Move active window alias
+          "$mod SHIFT, J, movetoworkspace, 1"
+          "$mod SHIFT, K, movetoworkspace, 2"
+          "$mod SHIFT, L, movetoworkspace, 3"
+          "$mod SHIFT, SEMICOLON, movetoworkspace, 4"
+          "$mod SHIFT, APOSTROPHE, movetoworkspace, 5"
+          # Example special workspace (scratchpad)
+          "$mod, S, togglespecialworkspace, magic"
+          "$mod SHIFT, S, movetoworkspace, special:magic"
+          "$mod, P, submap, screenshot"
+        ]
+        ++ (
+          # workspaces
+          # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+          builtins.concatLists (
+            builtins.genList (
+              x: let
+                ws = let
                   c = (x + 1) / 10;
                 in
-                builtins.toString (x + 1 - (c * 10));
-            in
-            [
-              "$mod, ${ws}, workspace, ${toString (x + 1)}"
-              "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-            ]
-          ) 10
-        )
-      );
+                  builtins.toString (x + 1 - (c * 10));
+              in [
+                "$mod, ${ws}, workspace, ${toString (x + 1)}"
+                "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+              ]
+            )
+            10
+          )
+        );
 
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
@@ -242,6 +233,5 @@ in
         submap = reset
       submap = reset
     '';
-
   };
 }

@@ -1,5 +1,9 @@
-{ ... }:
-{
+{...}: {
+  programs.readline = {
+    enable = true;
+    extraConfig = "set completion-ignore-case on";
+  };
+
   programs.bash = {
     enable = true;
     shellAliases = {
@@ -17,11 +21,13 @@
       miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
       sreboot = "systemctl reboot -i";
       icat = "kitten icat";
-      config = "sudoedit /etc/nixos/configuration.nix";
+      config = "sudoedit /etc/nixos/hosts/iggy-laptop/default.nix";
       se = "sudoedit";
       wipedocker = "docker stop $(docker ps -aq); docker system prune -a; docker volume prune -a";
       killalldocker = "docker ps -aq | xargs docker rm -f";
-      note = "nvim ~/Documents/notes/\$(date +%F).md";
+      note = "nvim ~/Documents/notes/$(date +%F).md";
+      stress = "stress-ng --cpu 0";
+      grip = "grep -i";
     };
     bashrcExtra = ''
       fff() {

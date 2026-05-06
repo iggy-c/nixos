@@ -1,5 +1,8 @@
-{ inputs, pkgs, ... }:
-let
+{
+  inputs,
+  pkgs,
+  ...
+}: let
   mkLockedAttrs = builtins.mapAttrs (
     _: value: {
       Value = value;
@@ -9,31 +12,33 @@ let
 
   mkPluginUrl = id: "https://addons.mozilla.org/firefox/downloads/latest/${id}/latest.xpi";
 
-  mkExtensionEntry =
-    {
-      id,
-      pinned ? false,
-    }:
-    let
-      base = {
-        install_url = mkPluginUrl id;
-        installation_mode = "force_installed";
-      };
-    in
-    if pinned then base // { default_area = "navbar"; } else base;
+  mkExtensionEntry = {
+    id,
+    pinned ? false,
+  }: let
+    base = {
+      install_url = mkPluginUrl id;
+      installation_mode = "force_installed";
+    };
+  in
+    if pinned
+    then base // {default_area = "navbar";}
+    else base;
 
   mkExtensionSettings = builtins.mapAttrs (
-    _: entry: if builtins.isAttrs entry then entry else mkExtensionEntry { id = entry; }
+    _: entry:
+      if builtins.isAttrs entry
+      then entry
+      else mkExtensionEntry {id = entry;}
   );
-in
-{
+in {
   imports = [
     inputs.zen-browser.homeModules.beta
   ];
   programs.zen-browser = {
     enable = true;
 
-    nativeMessagingHosts = [ pkgs.firefoxpwa ];
+    nativeMessagingHosts = [pkgs.firefoxpwa];
 
     policies = {
       AutoFillAddressEnabled = false;
@@ -79,6 +84,5 @@ in
         "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar
       ];
     };
-
   };
 }

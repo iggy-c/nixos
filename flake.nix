@@ -18,60 +18,86 @@
     claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs =
-    {
-      nixpkgs,
-      nixpkgs-unstable,
-      nixpkgs-main,
-      home-manager,
-      treefmt-nix,
-      ...
-    }@inputs:
-    {
-      formatter.x86_64-linux = treefmt-nix.lib.mkWrapper nixpkgs.legacyPackages.x86_64-linux ./treefmt.nix;
+  outputs = {
+    nixpkgs,
+    nixpkgs-unstable,
+    nixpkgs-main,
+    home-manager,
+    treefmt-nix,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+    pkgsWithUnfree = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  in {
+    formatter.${system} = treefmt-nix.lib.mkWrapper nixpkgs.legacyPackages.${system} ./treefmt.nix;
 
-      nixosConfigurations.iggy-laptop = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs;
-          pkgsUnstable = import nixpkgs-unstable {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
-          pkgsMain = import nixpkgs-main {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
-          pkgsRocmCuda = import nixpkgs {
-            system = "x86_64-linux";
-            config = {
-              allowUnfree = true;
-              rocmSupport = true;
-              cudaSupport = true;
-            };
+    nixosConfigurations.iggy-laptop = nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        inherit inputs;
+        pkgsUnstable = import nixpkgs-unstable {
+          inherit system;
+          config.allowUnfree = true;
+        };
+        pkgsMain = import nixpkgs-main {
+          inherit system;
+          config.allowUnfree = true;
+        };
+        pkgsRocmCuda = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            rocmSupport = true;
+            cudaSupport = true;
           };
         };
+      };
+      modules = [
+        ./hosts/iggy-laptop
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "hm-bak";
+          home-manager.sharedModules = [./home/common];
+          home-manager.extraSpecialArgs = {inherit inputs;};
+          home-manager.users.iggy = ./home/iggy;
+          home-manager.users.wiggy = ./home/wiggy;
+        }
+        {
+          nixpkgs.overlays = [
+            (final: prev: {
+              quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
+                version = "20.1.0.711";
+                # hashes inline here
+              });
+            })
+          ];
+        }
+      ];
+    };
+
+    homeConfigurations = let
+      pkgs = pkgsWithUnfree;
+    in {
+      "iggy" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = {inherit inputs;};
         modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.sharedModules = [ ./home-manager/global-home ];
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.iggy = ./home-manager/iggy-home;
-            home-manager.users.wiggy = ./home-manager/wiggy-home;
-          }
-          {
-            nixpkgs.overlays = [
-              (final: prev: {
-                quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
-                  version = "20.1.0.711";
-                  # hashes inline here
-                });
-              })
-            ];
-          }
+          ./home/common
+          ./home/iggy
+        ];
+      };
+      "wiggy" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = {inherit inputs;};
+        modules = [
+          ./home/common
+          ./home/wiggy
         ];
       };
     };
+  };
 }
