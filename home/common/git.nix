@@ -2,10 +2,9 @@
   programs.git = {
     enable = true;
     settings = {
-      credential = {
-        helper = "${pkgs.git-credential-manager}/bin/git-credential-manager";
-        credentialStore = "gpg";
-      };
+      diff.tool = "nvimdiff";
+	  difftool.prompt = false;
+	  fetch.recurseSubbmodules = true;
     };
   };
 }

@@ -55,7 +55,7 @@
         };
       };
       modules = [
-        ./hosts/iggy-laptop
+        ./systems/iggy-laptop
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;

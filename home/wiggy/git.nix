@@ -1,12 +1,15 @@
-{...}: {
+{pkgs, ...}: {
   programs.git = {
     settings = {
       user = {
         email = "benjamin.cusack@watts.ai";
         name = "benjamin.cusack";
       };
-      credential.gpgEncryptionKey = "8C5AEEA74F7C0737";
-      diff.tool = "nvimdiff";
+      credential = {
+        gpgEncryptionKey = "8C5AEEA74F7C0737";
+        helper = "${pkgs.git-credential-manager}/bin/git-credential-manager";
+        credentialStore = "gpg";
+      };
     };
     includes = [
       {

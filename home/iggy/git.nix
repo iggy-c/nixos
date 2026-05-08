@@ -6,7 +6,6 @@
         name = "iggy";
       };
       safe.directory = ["/etc/nixos"];
-      diff.tool = "nvimdiff";
     };
   };
 }
