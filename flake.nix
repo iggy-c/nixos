@@ -34,7 +34,7 @@
   in {
     formatter.${system} = treefmt-nix.lib.mkWrapper nixpkgs.legacyPackages.${system} ./treefmt.nix;
 
-    nixosConfigurations.iggy-laptop = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.big-red-dot = nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs;
         pkgsUnstable = import nixpkgs-unstable {
@@ -55,7 +55,7 @@
         };
       };
       modules = [
-        ./systems/iggy-laptop
+        ./systems/big-red-dot
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;

@@ -6,6 +6,7 @@
 
   programs.bash = {
     enable = true;
+
     shellAliases = {
       sudo = "sudo ";
       ssh = "kitten ssh";
@@ -28,7 +29,9 @@
       note = "nvim ~/Documents/notes/$(date +%F).md";
       stress = "stress-ng --cpu 0";
       grip = "grep -i";
+	  fvf = "vim $(fzf)";
     };
+
     bashrcExtra = ''
       fff() {
         command fff "$@"

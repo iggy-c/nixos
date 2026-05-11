@@ -24,8 +24,14 @@
     options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
     install algif_aead /bin/false
   '';
+  boot.kernelParams = [
+    "resume=/dev/disk/by-uuid/8fe45d08-2438-4caa-a45f-60c79cf58a6f"
+	"resume_offset=57430016"
+  ];
+  systemd.sleep.extraConfig = "HibernateDelaySec=2h";
+  services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
 
-  networking.hostName = "iggy-laptop";
+  networking.hostName = "big-red-dot";
 
   networking.networkmanager.enable = true;
 
@@ -136,6 +142,10 @@
         CPU_BOOST_ON_BAT = 0;
         CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+        # Align the ACPI platform profile with the CPU governor so firmware-level
+        # power limits (STAPM/SPL) also reflect AC vs battery intent.
+        PLATFORM_PROFILE_ON_AC = "performance";
+        PLATFORM_PROFILE_ON_BAT = "low-power";
         START_CHARGE_THRESH_BAT0 = 0;
         STOP_CHARGE_THRESH_BAT0 = 100;
       };
@@ -171,6 +181,14 @@
     open = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+    # Save/restore GPU state on suspend/resume via systemd hooks.
+    # Without this, the driver re-initializes from undefined state on wake,
+    # causing slowness proportional to how many GPU-using apps were open.
+    powerManagement.enable = true;
+    # With PRIME offload mode, allow the dGPU to fully power off (D3cold/RTD3)
+    # when no apps are using it, reducing suspend/resume surface area.
+    powerManagement.finegrained = true;
 
     prime = {
       offload = {
@@ -406,7 +424,6 @@
     quickshell
     hyprshot
     hyprpicker
-    hypridle
     hyprmon
     libnotify
     kdePackages.kio-admin
