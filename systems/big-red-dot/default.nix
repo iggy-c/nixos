@@ -9,6 +9,7 @@
   imports = [
     ./hardware-configuration.nix
     ./dod.nix
+    ../common/default.nix
   ];
 
   # Bootloader.
@@ -26,7 +27,7 @@
   '';
   boot.kernelParams = [
     "resume=/dev/disk/by-uuid/8fe45d08-2438-4caa-a45f-60c79cf58a6f"
-	"resume_offset=57430016"
+    "resume_offset=57430016"
   ];
   systemd.sleep.extraConfig = "HibernateDelaySec=2h";
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
@@ -285,6 +286,7 @@
         tilt
         kubectl
         kubernetes-helm
+        k3d
       ];
     };
   };
@@ -510,7 +512,7 @@
     opensc
     cacert
     omnissa-horizon-client
-    claude-code
+    pkgsUnstable.claude-code
 
     # dwl
     wmenu

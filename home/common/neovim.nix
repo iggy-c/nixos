@@ -29,8 +29,8 @@
         nvim-treesitter.withAllGrammars
 
         nvim-colorizer-lua #the catgoose one
-		
-		hmts-nvim
+
+        hmts-nvim
       ];
 
       extraConfig = ''
@@ -51,7 +51,7 @@
             names = false,
           }
         })
-		
+
         local neo_enabled = true
         vim.keymap.set('n', '<leader>tn', function()
           if neo_enabled then

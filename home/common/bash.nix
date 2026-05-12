@@ -15,7 +15,7 @@
       ls = "eza";
       la = "eza -a";
       li = "eza --icons";
-      ll = "eza -l";
+      ll = "eza -lg";
       numlock_toggle = "evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 1 --sync; evemu-event /dev/input/event0 --type EV_KEY --code KEY_NUMLOCK --value 0 --sync";
       blackhawk = "ssh bc1054@blackhawk.ece.uah.edu";
       todo = "nvim ~/Documents/todo.md";
@@ -29,7 +29,7 @@
       note = "nvim ~/Documents/notes/$(date +%F).md";
       stress = "stress-ng --cpu 0";
       grip = "grep -i";
-	  fvf = "vim $(fzf)";
+      fvf = "vim $(fzf)";
     };
 
     bashrcExtra = ''
