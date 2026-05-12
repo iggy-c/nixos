@@ -40,6 +40,8 @@
     "nix-command"
     "flakes"
   ];
+  nix.settings.keep-outputs = true;
+  nix.settings.keep-derivations = true;
 
   swapDevices = [
     {
@@ -323,6 +325,10 @@
 
   programs.starship.enable = true;
   programs.bash.enable = true;
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 
   virtualisation.docker = {
     enable = true;
@@ -336,11 +342,6 @@
   };
   virtualisation.spiceUSBRedirection.enable = true;
   services.spice-vdagentd.enable = true;
-
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
 
   programs.nh = {
     enable = true;
