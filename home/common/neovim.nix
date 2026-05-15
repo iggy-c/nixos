@@ -34,7 +34,7 @@
       ];
 
       extraConfig = ''
-               set ai
+        set ai
         set cursorline
         set number
         set wildmode=longest,list
