@@ -1,5 +1,5 @@
 {
-  description = "iggyFlake";
+  description = "flake for all systems and home manager";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
@@ -75,6 +75,23 @@
               });
             })
           ];
+        }
+      ];
+    };
+
+    nixosConfigurations.live-iso = nixpkgs.lib.nixosSystem {
+      specialArgs = {inherit inputs;};
+      modules = [
+        "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+        ./systems/live-iso
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "hm-bak";
+          home-manager.sharedModules = [./home/common];
+          home-manager.extraSpecialArgs = {inherit inputs;};
+          home-manager.users.iggy = ./home/iggy;
         }
       ];
     };

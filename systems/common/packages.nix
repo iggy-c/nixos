@@ -1,0 +1,52 @@
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    # todo: organize
+    wget
+    caligula
+    dysk
+    pulseaudio
+    pavucontrol
+    mako
+    rofi
+    tree
+    fzf
+    eza
+    lshw
+    yq
+    jq
+    fastfetch
+    screen
+    speedtest-rs
+    ncdu
+    zip
+    unzip
+    unrar
+    imagemagick
+    rename # the perl one
+    bat
+    socat
+    tio
+    net-tools
+    ripgrep
+    silver-searcher
+    lsof
+    bluetui
+    vlc
+    ffmpeg
+    copyparty
+    cloudflared
+    zathura
+    kitty
+    nautilus
+    kdePackages.kcalc
+    waybar
+    hyprmon
+    hyprpolkitagent
+    yt-dlp
+    qbittorrent
+    hyprshot
+    wl-clipboard
+    fontconfig
+    lm_sensors
+  ];
+}

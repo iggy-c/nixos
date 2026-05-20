@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   programs.readline = {
     enable = true;
     extraConfig = "set completion-ignore-case on";
@@ -6,6 +6,29 @@
 
   programs.bash = {
     enable = true;
+
+    shellAliases = config.programs.zsh.shellAliases;
+
+    bashrcExtra = ''
+      fff() {
+        command fff "$@"
+        cd "$(cat "''${XDG_CACHE_HOME:=''${HOME}/.cache}/fff/.fff_d")"
+      }
+    '';
+  };
+
+  programs.zsh = {
+    enable = true;
+
+    setOptions = [
+      "noautomenu"
+    ];
+
+    # append zshrc
+    initContent = ''
+      autoload -Uz compinit && compinit
+         zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+    '';
 
     shellAliases = {
       sudo = "sudo ";
@@ -31,12 +54,5 @@
       grip = "grep -i";
       fvf = "vim $(fzf)";
     };
-
-    bashrcExtra = ''
-      fff() {
-        command fff "$@"
-        cd "$(cat "''${XDG_CACHE_HOME:=''${HOME}/.cache}/fff/.fff_d")"
-      }
-    '';
   };
 }

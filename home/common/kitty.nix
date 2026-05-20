@@ -10,6 +10,7 @@ in {
     enable = true;
     themeFile = lib.mkDefault "gruvbox-dark";
     shellIntegration.enableBashIntegration = true;
+    shellIntegration.enableZshIntegration = true;
     settings = {
       confirm_os_window_close = lib.mkDefault (-1);
     };

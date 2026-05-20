@@ -36,13 +36,6 @@
 
   networking.networkmanager.enable = true;
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  nix.settings.keep-outputs = true;
-  nix.settings.keep-derivations = true;
-
   swapDevices = [
     {
       device = "/swapfile";
@@ -69,8 +62,6 @@
     pam.services.hyprlock.enable = true;
   };
 
-  programs.hyprlock.enable = true;
-
   services = {
     xserver.xkb = {
       layout = "us";
@@ -90,9 +81,7 @@
       platformio-core
     ];
 
-    upower = {
-      enable = true;
-    };
+    upower.enable = true;
 
     pipewire = {
       enable = true;
@@ -169,11 +158,6 @@
     };
   };
 
-  programs.nautilus-open-any-terminal = {
-    enable = true;
-    terminal = "kitty";
-  };
-
   hardware.graphics = {
     enable = true;
   };
@@ -209,38 +193,7 @@
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        Experimental = true;
-        FastConnectable = true;
-      };
-      Policy = {
-        AutoEnable = true;
-      };
-    };
-  };
-
-  fonts = {
-    enableDefaultPackages = true;
-    enableGhostscriptFonts = true;
-    fontconfig.defaultFonts = {
-      serif = ["Noto Serif"];
-      sansSerif = ["Noto Sans"];
-      monospace = ["FiraMono Nerd Font"];
-    };
-    packages = with pkgs; [
-      nerd-fonts.fira-code
-      corefonts
-      vista-fonts
-    ];
-  };
-
-  programs.steam = {
-    enable = true;
-  };
+  programs.steam.enable = true;
   hardware.steam-hardware.enable = true;
 
   # User groups
@@ -263,10 +216,12 @@
         prismlauncher
         kdePackages.kpat
       ];
+      shell = pkgs.zsh;
     };
     wiggy = {
       isNormalUser = true;
       description = "work account";
+      shell = pkgs.zsh;
       extraGroups = [
         "networkmanager"
         "wheel"
@@ -297,40 +252,7 @@
     "@nixusers"
   ];
 
-  programs.firefox = {
-    enable = true;
-    preferences = {
-      "browser.aboutConfig.showWarning" = false;
-      "browser.gesture.swipe.left" = "scrollLeft";
-      "browser.gesture.swipe.right" = "scrollRight";
-      "browser.tabs.inTitlebar" = 0;
-      "browser.download.panel.shown" = true;
-      "browser.download.autohideButton" = false;
-    };
-  };
-  programs.obs-studio = {
-    enable = true;
-    enableVirtualCamera = true;
-  };
-
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  environment.sessionVariables.TERMINAL = "kitty";
   programs.dwl.enable = true;
-
-  programs.bash.enable = true;
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-    settings = {
-      global = {
-        hide_env_diff = true;
-      };
-    };
-  };
 
   virtualisation.docker = {
     enable = true;
@@ -345,57 +267,31 @@
   virtualisation.spiceUSBRedirection.enable = true;
   services.spice-vdagentd.enable = true;
 
-  programs.nh = {
+  zramSwap.enable = true;
+
+  programs.firefox = {
     enable = true;
+    preferences = {
+      "browser.aboutConfig.showWarning" = false;
+      "browser.gesture.swipe.left" = "scrollLeft";
+      "browser.gesture.swipe.right" = "scrollRight";
+      "browser.tabs.inTitlebar" = 0;
+      "browser.download.panel.shown" = true;
+      "browser.download.autohideButton" = false;
+    };
   };
-
-  programs.nix-ld = {
-    enable = true;
-  };
-
-  nixpkgs.config.allowUnfree = true;
-
-  services.flatpak.enable = true;
 
   environment.systemPackages = with pkgs; [
     # terminal tools
-    wget
-    caligula
-    dysk
-    pulseaudio
-    tree
     evemu
-    micro
-    fzf
-    eza
-    lshw
     pkgsRocmCuda.btop
     blahaj
     lavat
     pipes
     cbonsai
-    yq
-    jq
-    bat
-    fastfetch
-    screen
     nmap
-    speedtest-rs
-    ncdu
-    zip
-    unzip
-    unrar
-    imagemagick
-    rename
     lazydocker
-    socat
-    tio
-    net-tools
-    ripgrep
-    silver-searcher
     pwgen
-    lsof
-    alejandra
     avrdude
     avrdudess
     libimobiledevice
@@ -403,7 +299,6 @@
     can-utils
     acpi
     killall
-    bluetui
     wev
     geteduroam
     shellcheck
@@ -426,23 +321,16 @@
 
     # desktop environment
     hyprpaper
-    waybar
     quickshell
-    hyprshot
     hyprpicker
-    hyprmon
     libnotify
     kdePackages.kio-admin
     kdePackages.systemsettings
     kdePackages.dolphin
     kdePackages.qt6ct
-    pavucontrol
-    mako
-    rofi
     brightnessctl
     bluez
     spice
-    wl-clipboard
     (where-is-my-sddm-theme.override {
       themeConfig.General = {
         showUsersByDefault = true;
@@ -456,7 +344,6 @@
     kdePackages.gwenview
     kdePackages.kdenlive
     kdePackages.partitionmanager
-    kdePackages.kcalc
     inav-configurator
     mission-planner
     libreoffice-qt-fresh
@@ -464,21 +351,13 @@
     qdirstat
     gimp
     rivalcfg
-    freecad
     kicad
     iverilog
     typst
-    zathura
-    kitty
-    nautilus
     prusa-slicer
-    hyprpolkitagent
 
     # video
-    vlc
     handbrake
-    ffmpeg
-    yt-dlp
 
     # sound
     rmpc
@@ -495,11 +374,8 @@
     distrobox
 
     # file sharing
-    copyparty
-    cloudflared
     localsend
     syncthing
-    qbittorrent
 
     # code editors
     zed-editor
