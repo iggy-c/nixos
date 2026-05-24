@@ -76,12 +76,6 @@ in {
         "browser.tabs.inTitlebar" = 0;
       };
 
-	  programs.zen-browser.profiles.${config.home.username} = {
-	    id = 0;
-		settings = {
-		  "zen.welcome-screen.seen" = true;
-		};
-      };
     };
 
     profiles.default = {

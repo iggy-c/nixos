@@ -28,6 +28,7 @@
   boot.kernelParams = [
     "resume=/dev/disk/by-uuid/8fe45d08-2438-4caa-a45f-60c79cf58a6f"
     "resume_offset=57430016"
+    "amd_pstate=guided"
   ];
   systemd.sleep.extraConfig = "HibernateDelaySec=2h";
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
@@ -125,23 +126,6 @@
       };
     };
     pcscd.enable = true;
-
-    power-profiles-daemon.enable = false;
-    tlp = {
-      enable = true;
-      settings = {
-        CPU_BOOST_ON_AC = 1;
-        CPU_BOOST_ON_BAT = 0;
-        CPU_SCALING_GOVERNOR_ON_AC = "performance";
-        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-        PLATFORM_PROFILE_ON_AC = "performance";
-        PLATFORM_PROFILE_ON_BAT = "low-power";
-        START_CHARGE_THRESH_BAT0 = 0;
-        STOP_CHARGE_THRESH_BAT0 = 100;
-      };
-    };
   };
 
   xdg.portal = {
@@ -253,6 +237,7 @@
   ];
 
   programs.dwl.enable = true;
+  programs.hyprlock.enable = true;
 
   virtualisation.docker = {
     enable = true;
@@ -355,6 +340,7 @@
     iverilog
     typst
     prusa-slicer
+    bambu-studio
 
     # video
     handbrake

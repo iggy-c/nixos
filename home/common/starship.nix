@@ -4,7 +4,7 @@
   ...
 }: {
   programs.starship = {
-    enable = true;
+    enable = false;
     settings = {
       format = lib.concatStrings [
         "$\{custom.path\}"

@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs.readline = {
     enable = true;
     extraConfig = "set completion-ignore-case on";
@@ -24,10 +28,13 @@
       "noautomenu"
     ];
 
+    completionInit = "autoload -Uz compinit && compinit -C";
+
     # append zshrc
     initContent = ''
-      autoload -Uz compinit && compinit
-         zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+      source ~/.p10k.zsh
+      bindkey "^R" history-incremental-search-backward
     '';
 
     shellAliases = {
@@ -52,7 +59,15 @@
       note = "nvim ~/Documents/notes/$(date +%F).md";
       stress = "stress-ng --cpu 0";
       grip = "grep -i";
-      fvf = "vim $(fzf)";
+      fvf = "fzf --bind 'enter:become(vim {})'";
     };
+
+    plugins = [
+      {
+        name = "powerlevel10k";
+        src = pkgs.zsh-powerlevel10k;
+        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      }
+    ];
   };
 }

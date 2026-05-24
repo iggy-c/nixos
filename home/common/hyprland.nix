@@ -86,7 +86,8 @@ in {
           "$mod, space, exec, $menu"
           "$mod, B, exec, ~/scripts/earbuds_toggle.sh"
           "$mod, Q, exec, kitten quick-access-terminal"
-          "$mod, escape, exec, qs -c ~/.config/quickshell/lock/"
+          # "$mod, escape, exec, qs -c ~/.config/quickshell/lock/"
+          "$mod, escape, exec, hyprlock"
           "$mod, PERIOD, exec, rofi -modi emoji -show emoji"
 
           #workspaces
@@ -207,31 +208,33 @@ in {
     };
 
     extraConfig = ''
-      submap = screenshot
-        bind = , escape, submap, reset
-        bind = , C, submap, screenshotCopy
-        bind = , S, submap, screenshotSave
-        submap = screenshotCopy
-          bind = , R, exec, hyprshot -m region --clipboard-only
-          bind = , M, exec, hyprshot -m output --clipboard-only
-          bind = , W, exec, hyprshot -m window --clipboard-only
-          bind = , R, submap, reset
-          bind = , M, submap, reset
-          bind = , W, submap, reset
-          bind = , escape, submap, reset
-          bind = , escape, exec, hyprctl kill hyprshot
-        submap = reset
-        submap = screenshotSave
-          bind = , R, exec, hyprshot -m region -o ~/Pictures/Screenshots -f "screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
-          bind = , M, exec, hyprshot -m region -o ~/Pictures/Screenshots -f "screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
-          bind = , W, exec, hyprshot -m region -o ~/Pictures/Screenshots -f "screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
-          bind = , R, submap, reset
-          bind = , M, submap, reset
-          bind = , W, submap, reset
-          bind = , escape, submap, reset
-          bind = , escape, exec, hyprctl kill hyprshot
-        submap = reset
-      submap = reset
+         submap = screenshot
+           bind = , escape, submap, reset
+           bind = , C, submap, screenshotCopy
+           bind = , S, submap, screenshotSave
+           submap = screenshotCopy
+             bind = , R, exec, hyprshot -m region --clipboard-only
+             bind = , M, exec, hyprshot -m output --clipboard-only
+             bind = , W, exec, hyprshot -m window --clipboard-only
+             bind = , R, submap, reset
+             bind = , M, submap, reset
+             bind = , W, submap, reset
+             bind = , escape, submap, reset
+             bind = , escape, exec, hyprctl kill hyprshot
+           submap = reset
+           submap = screenshotSave
+             bind = , R, exec, hyprshot -m region -o ~/Pictures/Screenshots -f "screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
+             bind = , M, exec, hyprshot -m region -o ~/Pictures/Screenshots -f "screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
+             bind = , W, exec, hyprshot -m region -o ~/Pictures/Screenshots -f "screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
+             bind = , R, submap, reset
+             bind = , M, submap, reset
+             bind = , W, submap, reset
+             bind = , escape, submap, reset
+             bind = , escape, exec, hyprctl kill hyprshot
+           submap = reset
+         submap = reset
+
+      windowrule = float, size 350 475, class:org.kde.kcalc
     '';
   };
 }

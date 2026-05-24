@@ -2,7 +2,7 @@
   fonts = {
     enableDefaultPackages = true;
     enableGhostscriptFonts = true;
-	fontconfig.enable = true;
+    fontconfig.enable = true;
     fontconfig.defaultFonts = {
       serif = ["Noto Serif"];
       sansSerif = ["Noto Sans"];
