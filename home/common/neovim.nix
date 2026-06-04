@@ -31,6 +31,9 @@
         nvim-colorizer-lua #the catgoose one
 
         hmts-nvim
+
+		blink-indent
+		guess-indent-nvim
       ];
 
       extraConfig = ''
@@ -38,8 +41,11 @@
         set cursorline
         set number
         set wildmode=longest,list
+		set expandtab
+		set shiftwidth=4
         set tabstop=4
         set signcolumn=yes
+        set clipboard+=unnamedplus
       '';
 
       extraLuaConfig = ''
