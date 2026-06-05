@@ -2,11 +2,11 @@
   description = "flake for all systems and home manager";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs";
     nixpkgs-main.url = "github:nixos/nixpkgs/master";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -15,7 +15,6 @@
 
     # work
     claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
-    claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
@@ -27,8 +26,21 @@
     ...
   } @ inputs: let
     system = "x86_64-linux";
+    overlays = [
+      # nixpkgs 26.05 bug: firefoxpwa wrapper touches lib/firefoxpwa/is-packaged-app
+      # before creating the directory
+      (final: prev: {
+        firefoxpwa = prev.firefoxpwa.overrideAttrs (old: {
+          buildCommand = builtins.replaceStrings
+            [''touch "$out/lib/firefoxpwa/is-packaged-app"'']
+            [''mkdir -p "$out/lib/firefoxpwa"
+touch "$out/lib/firefoxpwa/is-packaged-app"'']
+            old.buildCommand;
+        });
+      })
+    ];
     pkgsWithUnfree = import nixpkgs {
-      inherit system;
+      inherit system overlays;
       config.allowUnfree = true;
     };
   in {
@@ -36,7 +48,7 @@
 
     nixosConfigurations.big-red-dot = nixpkgs.lib.nixosSystem {
       specialArgs = {
-        inherit inputs;
+        inherit inputs system;
         pkgsUnstable = import nixpkgs-unstable {
           inherit system;
           config.allowUnfree = true;
@@ -67,7 +79,7 @@
           home-manager.users.wiggy = ./home/wiggy;
         }
         {
-          nixpkgs.overlays = [
+          nixpkgs.overlays = overlays ++ [
             (final: prev: {
               quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
                 version = "20.1.0.711";

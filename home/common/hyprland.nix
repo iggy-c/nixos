@@ -1,10 +1,11 @@
-{pkgs, ...}: let
+{pkgs, config, ...}: let
   brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   rofi = "${pkgs.rofi}/bin/rofi";
   hyprshot = "${pkgs.hyprshot}/bin/hyprshot";
 in {
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "hyprlang";
     settings = {
       monitor = [
         ", preferred, auto, auto"
@@ -16,7 +17,7 @@ in {
         "mako"
         "systemctl --user start hyprpolkitagent"
         "ibus-daemon -rxRd"
-        "hyprpaper"
+        "sleep 2 && hyprctl hyprpaper wallpaper 'eDP-1,${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png'"
       ];
 
       general = {
@@ -37,8 +38,9 @@ in {
 
       misc = {
         middle_click_paste = false;
-        force_default_wallpaper = 1;
+        force_default_wallpaper = 0;
         disable_hyprland_logo = true;
+        disable_splash_rendering = true;
       };
 
       input = {
@@ -233,8 +235,15 @@ in {
              bind = , escape, exec, hyprctl kill hyprshot
            submap = reset
          submap = reset
-
-      windowrule = float, size 350 475, class:org.kde.kcalc
     '';
+  };
+
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      splash = false;
+      preload = [ "${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png" ];
+      wallpaper = [ "eDP-1,${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png" ];
+    };
   };
 }

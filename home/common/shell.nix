@@ -56,7 +56,8 @@
       se = "sudoedit";
       wipedocker = "docker stop $(docker ps -aq); docker system prune -a; docker volume prune -a";
       killalldocker = "docker ps -aq | xargs docker rm -f";
-      note = "nvim ~/Documents/notes/$(date +%F).md";
+      note = "nvim ~/Documents/Notes/$(date +%F).md";
+      notes = "nvim ~/Documents/Notes";
       stress = "stress-ng --cpu 0";
       grip = "grep -i";
       fvf = "fzf --bind 'enter:become(vim {})'";

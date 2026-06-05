@@ -2,7 +2,7 @@
   programs.btop = {
     enable = true;
     settings = {
-	  color_theme = "gruvbox_material_dark";
+      color_theme = "gruvbox_material_dark";
       theme_background = false;
       vim_keys = true;
       rounded_corners = false;

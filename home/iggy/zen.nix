@@ -75,7 +75,6 @@ in {
         "browser.gesture.swipe.right" = "scrollRight";
         "browser.tabs.inTitlebar" = 0;
       };
-
     };
 
     profiles.default = {

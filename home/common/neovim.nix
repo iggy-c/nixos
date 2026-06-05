@@ -32,8 +32,8 @@
 
         hmts-nvim
 
-		blink-indent
-		guess-indent-nvim
+        blink-indent
+        guess-indent-nvim
       ];
 
       extraConfig = ''
@@ -41,14 +41,14 @@
         set cursorline
         set number
         set wildmode=longest,list
-		set expandtab
-		set shiftwidth=4
+        set expandtab
+        set shiftwidth=4
         set tabstop=4
         set signcolumn=yes
         set clipboard+=unnamedplus
       '';
 
-      extraLuaConfig = ''
+      initLua = ''
         vim.o.background = "dark"
         vim.g.gruvbox_background = "soft"
         vim.cmd("colorscheme gruvbox")

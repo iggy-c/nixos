@@ -84,5 +84,5 @@
   image.fileName = "live-iggy.iso";
   isoImage.squashfsCompression = "zstd -Xcompression-level 6";
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

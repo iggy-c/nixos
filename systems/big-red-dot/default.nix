@@ -30,7 +30,6 @@
     "resume_offset=57430016"
     "amd_pstate=guided"
   ];
-  systemd.sleep.extraConfig = "HibernateDelaySec=2h";
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
 
   networking.hostName = "big-red-dot";
@@ -44,7 +43,8 @@
     }
   ];
 
-  time.timeZone = "America/Chicago";
+  # time.timeZone = "America/Chicago";
+  services.automatic-timezoned.enable = true;
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
@@ -89,17 +89,6 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-    };
-
-    mpd = {
-      enable = true;
-      musicDirectory = "${config.users.users.iggy.home}/Music";
-      extraConfig = ''
-        audio_output {
-          type "pipewire"
-          name "PipeWire Sound Server"
-        }
-      '';
     };
 
     # mute on lid open
@@ -176,6 +165,11 @@
 
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
+
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="0d3[0-9]", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+    SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="df11", MODE="0666"
+  '';
 
   programs.steam.enable = true;
   hardware.steam-hardware.enable = true;
@@ -340,7 +334,9 @@
     iverilog
     typst
     prusa-slicer
-    bambu-studio
+    # bambu-studio 
+    # ^ causing issues
+    chromium
 
     # video
     handbrake
@@ -351,6 +347,7 @@
     rhythmbox
     picard
     fmodex
+    mkvtoolnix
 
     # virtualisation
     gnome-boxes
@@ -385,5 +382,5 @@
     foot
   ];
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

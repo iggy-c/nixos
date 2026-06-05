@@ -38,7 +38,7 @@
     zathura
     kitty
     nautilus
-    kdePackages.kcalc
+    qalculate-gtk
     waybar
     hyprmon
     hyprpolkitagent
@@ -46,7 +46,7 @@
     qbittorrent
     hyprshot
     wl-clipboard
-    fontconfig
     lm_sensors
+    cage
   ];
 }

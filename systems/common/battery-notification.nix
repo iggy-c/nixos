@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   systemd.user.services."battery-low" = {
-    enable = true;
+    enable = false;
     description = "Notify user if battery is below 10%";
     partOf = ["graphical-session.target"];
     wantedBy = ["graphical-session.target"];
