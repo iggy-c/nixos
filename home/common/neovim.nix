@@ -46,6 +46,7 @@
         set tabstop=4
         set signcolumn=yes
         set clipboard+=unnamedplus
+        set lbr
       '';
 
       initLua = ''
