@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   pkgsRocmCuda,
   pkgsUnstable,
@@ -119,7 +120,7 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    extraPortals = [pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk];
     config = {
       hyprland = {
         default = [
@@ -219,7 +220,7 @@
         tilt
         kubectl
         kubernetes-helm
-        k3d
+        teams-for-linux
       ];
     };
   };
@@ -233,10 +234,37 @@
   programs.dwl.enable = true;
   programs.hyprlock.enable = true;
 
+  services.k3s = {
+    enable = true;
+    role = "server";
+    extraFlags = "--write-kubeconfig-mode=644";
+  };
+
+  # Only run k3s while user wiggy (uid 1001) has an active session.
+  systemd.services.k3s = {
+    wantedBy = lib.mkForce ["user@1001.service"];
+    bindsTo = ["user@1001.service"];
+    after = lib.mkAfter ["user@1001.service"];
+  };
+
+  # Allow k3s to pull from the local dev registry over plain HTTP.
+  environment.etc."rancher/k3s/registries.yaml".text = ''
+    mirrors:
+      "localhost:5000":
+        endpoint:
+          - "http://localhost:5000"
+  '';
+
+  # Local dev image registry — persistent, auto-started with Docker.
+  virtualisation.oci-containers.containers.registry = {
+    image = "registry:2";
+    ports = ["127.0.0.1:5000:5000"];
+  };
+
   virtualisation.docker = {
     enable = true;
     daemon.settings = {
-      insecure-registries = ["192.168.1.101:5000"];
+      insecure-registries = ["192.168.1.101:5000" "localhost:5000"];
     };
   };
   virtualisation.libvirtd = {
@@ -337,6 +365,8 @@
     # bambu-studio 
     # ^ causing issues
     chromium
+    frogmouth
+    browsh
 
     # video
     handbrake
@@ -363,7 +393,15 @@
     # code editors
     zed-editor
     vscode-fhs
-    arduino-ide
+    (pkgs.symlinkJoin {
+      name = "arduino-ide";
+      paths = [pkgs.arduino-ide];
+      buildInputs = [pkgs.makeWrapper];
+      postBuild = ''
+        wrapProgram $out/bin/arduino-ide \
+          --add-flags "--ozone-platform=x11 --disable-gpu"
+      '';
+    })
 
     # communication
     telegram-desktop

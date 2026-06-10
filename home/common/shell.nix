@@ -52,7 +52,7 @@
       miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
       sreboot = "systemctl reboot -i";
       icat = "kitten icat";
-      config = "cd /etc/nixos";
+      conf = "cd /etc/nixos";
       se = "sudoedit";
       wipedocker = "docker stop $(docker ps -aq); docker system prune -a; docker volume prune -a";
       killalldocker = "docker ps -aq | xargs docker rm -f";
