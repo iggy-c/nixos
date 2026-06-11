@@ -221,6 +221,7 @@
         kubectl
         kubernetes-helm
         teams-for-linux
+        soft-serve
       ];
     };
   };
@@ -365,7 +366,6 @@
     # bambu-studio 
     # ^ causing issues
     chromium
-    frogmouth
     browsh
 
     # video

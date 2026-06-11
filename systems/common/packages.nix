@@ -48,5 +48,6 @@
     wl-clipboard
     lm_sensors
     cage
+    glow
   ];
 }

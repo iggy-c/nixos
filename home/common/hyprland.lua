@@ -229,8 +229,13 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl s 10%+"), { locked
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"), { locked = true, repeating = true })
 
 -- integrated monitor
-hl.monitor({ output = "eDP-1", mode = "2880x1800", position = "0x1080", scale = 1.5 })
+hl.monitor({ output = "eDP-1", mode = "2880x1800", position = "0x0", scale = 1.5 })
 hl.workspace_rule({ workspace = "1", monitor = "eDP-1", default = true, persistent = true })
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+
+-- work monitors
+hl.monitor({ output = "DP-7", mode = "1920x1080", position = "0x-1080", scale = 1 })
+hl.monitor({ output = "DP-9", mode = "1920x1080", position = "1920x-1080", scale = 1, transform = 3 })
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("waybar")
