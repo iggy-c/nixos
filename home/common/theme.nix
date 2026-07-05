@@ -56,8 +56,8 @@ in {
     enable = true;
     settings = {
       splash = false;
-      preload = [ "${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png" ];
-      wallpaper = [ ",${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png" ];
+      preload = ["${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png"];
+      wallpaper = [",${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png"];
     };
   };
 }

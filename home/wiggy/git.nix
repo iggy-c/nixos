@@ -8,7 +8,7 @@
       credential = {
         gpgEncryptionKey = "8C5AEEA74F7C0737";
         helper = "${pkgs.git-credential-manager}/bin/git-credential-manager";
-        credentialStore = "gpg";
+        credentialStore = "secretservice";
       };
     };
     includes = [

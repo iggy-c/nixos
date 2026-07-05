@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     # todo: organize
     wget
@@ -49,5 +53,6 @@
     lm_sensors
     cage
     glow
+    inputs.sidra.packages.${pkgs.system}.default
   ];
 }

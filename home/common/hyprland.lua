@@ -143,14 +143,14 @@ hl.gesture({
     fingers = 3,
     direction = "right",
     action = function()
-        hl.dispatch(hl.dsp.focus({ workspace = "-1" }))
+        hl.dispatch(hl.dsp.focus({ workspace = "r-1" }))
     end
 })
 hl.gesture({
     fingers = 3,
     direction = "left",
     action = function()
-        hl.dispatch(hl.dsp.focus({ workspace = "+1" }))
+        hl.dispatch(hl.dsp.focus({ workspace = "r+1" }))
     end,
 })
 
@@ -187,11 +187,11 @@ hl.bind("SUPER + L", hl.dsp.focus({ workspace = 3 }))
 hl.bind("SUPER + SEMICOLON", hl.dsp.focus({ workspace = 4 }))
 hl.bind("SUPER + APOSTROPHE", hl.dsp.focus({ workspace = 5 }))
 
-hl.bind("SUPER + J", hl.dsp.window.move({ workspace = 1, }))
-hl.bind("SUPER + K", hl.dsp.window.move({ workspace = 2, }))
-hl.bind("SUPER + L", hl.dsp.window.move({ workspace = 3, }))
-hl.bind("SUPER + SEMICOLON",  hl.dsp.window.move({ workspace = 4 }))
-hl.bind("SUPER + APOSTROPHE", hl.dsp.window.move({ workspace = 5 }))
+hl.bind("SUPER + SHIFT + J", hl.dsp.window.move({ workspace = 1, }))
+hl.bind("SUPER + SHIFT + K", hl.dsp.window.move({ workspace = 2, }))
+hl.bind("SUPER + SHIFT + L", hl.dsp.window.move({ workspace = 3, }))
+hl.bind("SUPER + SHIFT + SEMICOLON",  hl.dsp.window.move({ workspace = 4 }))
+hl.bind("SUPER + SHIFT + APOSTROPHE", hl.dsp.window.move({ workspace = 5 }))
 
 -- workspaces 1-10 on SUPER+[1-0], 11-20 on SUPER+ALT+[1-0]
 for n = 1, 10 do
@@ -234,11 +234,11 @@ hl.workspace_rule({ workspace = "1", monitor = "eDP-1", default = true, persiste
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
 -- work monitors
-hl.monitor({ output = "DP-7", mode = "1920x1080", position = "0x-1080", scale = 1 })
-hl.monitor({ output = "DP-9", mode = "1920x1080", position = "1920x-1080", scale = 1, transform = 3 })
+hl.monitor({ output = "desc:Dell Inc. DELL P2722H BML6293", mode = "1920x1080", position = "0x-1080", scale = 1 })
+hl.monitor({ output = "desc:Dell Inc. DELL P2722H 9RL6293", mode = "1920x1080", position = "1920x-1080", scale = 1, transform = 3 })
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("qs -c ~/quickshell")
     hl.exec_cmd("mako")
     hl.exec_cmd("sleep 0.5; hyprctl hyprpaper wallpaper ',~/Pictures/Wallpapers/current-wallpaper.png'")
 end)

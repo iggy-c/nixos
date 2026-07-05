@@ -21,5 +21,8 @@ in {
       lines = lib.mkDefault 5;
       background_opacity = lib.mkDefault 0.9;
     };
+    keybindings = {
+      "super+shift+enter" = "new_os_window_with_cwd";
+    };
   };
 }

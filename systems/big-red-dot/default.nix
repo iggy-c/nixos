@@ -141,12 +141,7 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
 
-    # Save/restore GPU state on suspend/resume via systemd hooks.
-    # Without this, the driver re-initializes from undefined state on wake,
-    # causing slowness proportional to how many GPU-using apps were open.
     powerManagement.enable = true;
-    # With PRIME offload mode, allow the dGPU to fully power off (D3cold/RTD3)
-    # when no apps are using it, reducing suspend/resume surface area.
     powerManagement.finegrained = true;
 
     prime = {
@@ -222,6 +217,7 @@
         kubernetes-helm
         teams-for-linux
         soft-serve
+        crush
       ];
     };
   };
@@ -232,11 +228,10 @@
     "@nixusers"
   ];
 
-  programs.dwl.enable = true;
   programs.hyprlock.enable = true;
 
   services.k3s = {
-    enable = true;
+    enable = false;
     role = "server";
     extraFlags = "--write-kubeconfig-mode=644";
   };
@@ -363,7 +358,7 @@
     iverilog
     typst
     prusa-slicer
-    # bambu-studio 
+    # bambu-studio
     # ^ causing issues
     chromium
     browsh
@@ -415,9 +410,7 @@
     omnissa-horizon-client
     pkgsUnstable.claude-code
 
-    # dwl
-    wmenu
-    foot
+    tinywl
   ];
 
   system.stateVersion = "26.05";

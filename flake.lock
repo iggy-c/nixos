@@ -144,6 +144,22 @@
     },
     "nixpkgs_3": {
       "locked": {
+        "lastModified": 1781577229,
+        "narHash": "sha256-lrp67w8AulE9Ks53n27I45ADSzbOCn4H+CNW1Ck8B+8=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "567a49d1913ce81ac6e9582e3553dd90a955875f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
         "lastModified": 1770107345,
         "narHash": "sha256-tbS0Ebx2PiA1FRW8mt8oejR0qMXmziJmPaU1d4kYY9g=",
         "owner": "nixos",
@@ -158,7 +174,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_4": {
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1780243769,
         "narHash": "sha256-x5UQuRsH3MqI0U9afaXSNqzTPSeZlRLvFAav2Ux1pNw=",
@@ -181,8 +197,27 @@
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-main": "nixpkgs-main",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "sidra": "sidra",
         "treefmt-nix": "treefmt-nix",
         "zen-browser": "zen-browser"
+      }
+    },
+    "sidra": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "lastModified": 1781979797,
+        "narHash": "sha256-Xzxfh3rYe4fdBpYDWCdgFjpv3iT/NveUlvk+CLcfZ40=",
+        "owner": "wimpysworld",
+        "repo": "sidra",
+        "rev": "2e3c80ea31b48bf9d09363eff57c4327624b6b8e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wimpysworld",
+        "repo": "sidra",
+        "type": "github"
       }
     },
     "systems": {
@@ -202,7 +237,7 @@
     },
     "treefmt-nix": {
       "inputs": {
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_4"
       },
       "locked": {
         "lastModified": 1780220602,
@@ -221,7 +256,7 @@
     "zen-browser": {
       "inputs": {
         "home-manager": "home-manager_2",
-        "nixpkgs": "nixpkgs_4"
+        "nixpkgs": "nixpkgs_5"
       },
       "locked": {
         "lastModified": 1780567926,

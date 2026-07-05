@@ -12,6 +12,7 @@
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    sidra.url = "github:wimpysworld/sidra";
 
     # work
     claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
@@ -31,10 +32,13 @@
       # before creating the directory
       (final: prev: {
         firefoxpwa = prev.firefoxpwa.overrideAttrs (old: {
-          buildCommand = builtins.replaceStrings
+          buildCommand =
+            builtins.replaceStrings
             [''touch "$out/lib/firefoxpwa/is-packaged-app"'']
-            [''mkdir -p "$out/lib/firefoxpwa"
-touch "$out/lib/firefoxpwa/is-packaged-app"'']
+            [
+              ''                mkdir -p "$out/lib/firefoxpwa"
+                touch "$out/lib/firefoxpwa/is-packaged-app"''
+            ]
             old.buildCommand;
         });
       })
@@ -79,14 +83,16 @@ touch "$out/lib/firefoxpwa/is-packaged-app"'']
           home-manager.users.wiggy = ./home/wiggy;
         }
         {
-          nixpkgs.overlays = overlays ++ [
-            (final: prev: {
-              quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
-                version = "20.1.0.711";
-                # hashes inline here
-              });
-            })
-          ];
+          nixpkgs.overlays =
+            overlays
+            ++ [
+              (final: prev: {
+                quartus-prime-lite-unwrapped = prev.quartus-prime-lite-unwrapped.overrideAttrs (_: {
+                  version = "20.1.0.711";
+                  # hashes inline here
+                });
+              })
+            ];
         }
       ];
     };
