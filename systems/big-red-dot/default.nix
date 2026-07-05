@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   pkgsRocmCuda,
   pkgsUnstable,
@@ -28,20 +29,13 @@
   boot.kernelParams = [
     "resume=/dev/disk/by-uuid/8fe45d08-2438-4caa-a45f-60c79cf58a6f"
     "resume_offset=57430016"
+    "amd_pstate=guided"
   ];
-  systemd.sleep.extraConfig = "HibernateDelaySec=2h";
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
 
   networking.hostName = "big-red-dot";
 
   networking.networkmanager.enable = true;
-
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  nix.settings.keep-outputs = true;
-  nix.settings.keep-derivations = true;
 
   swapDevices = [
     {
@@ -50,7 +44,8 @@
     }
   ];
 
-  time.timeZone = "America/Chicago";
+  # time.timeZone = "America/Chicago";
+  services.automatic-timezoned.enable = true;
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
@@ -68,8 +63,6 @@
     polkit.enable = true;
     pam.services.hyprlock.enable = true;
   };
-
-  programs.hyprlock.enable = true;
 
   services = {
     xserver.xkb = {
@@ -90,26 +83,13 @@
       platformio-core
     ];
 
-    upower = {
-      enable = true;
-    };
+    upower.enable = true;
 
     pipewire = {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-    };
-
-    mpd = {
-      enable = true;
-      musicDirectory = "${config.users.users.iggy.home}/Music";
-      extraConfig = ''
-        audio_output {
-          type "pipewire"
-          name "PipeWire Sound Server"
-        }
-      '';
     };
 
     # mute on lid open
@@ -136,28 +116,11 @@
       };
     };
     pcscd.enable = true;
-
-    power-profiles-daemon.enable = false;
-    tlp = {
-      enable = true;
-      settings = {
-        CPU_BOOST_ON_AC = 1;
-        CPU_BOOST_ON_BAT = 0;
-        CPU_SCALING_GOVERNOR_ON_AC = "performance";
-        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-        PLATFORM_PROFILE_ON_AC = "performance";
-        PLATFORM_PROFILE_ON_BAT = "low-power";
-        START_CHARGE_THRESH_BAT0 = 0;
-        STOP_CHARGE_THRESH_BAT0 = 100;
-      };
-    };
   };
 
   xdg.portal = {
     enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    extraPortals = [pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk];
     config = {
       hyprland = {
         default = [
@@ -169,11 +132,6 @@
     };
   };
 
-  programs.nautilus-open-any-terminal = {
-    enable = true;
-    terminal = "kitty";
-  };
-
   hardware.graphics = {
     enable = true;
   };
@@ -183,12 +141,7 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
 
-    # Save/restore GPU state on suspend/resume via systemd hooks.
-    # Without this, the driver re-initializes from undefined state on wake,
-    # causing slowness proportional to how many GPU-using apps were open.
     powerManagement.enable = true;
-    # With PRIME offload mode, allow the dGPU to fully power off (D3cold/RTD3)
-    # when no apps are using it, reducing suspend/resume surface area.
     powerManagement.finegrained = true;
 
     prime = {
@@ -209,38 +162,12 @@
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        Experimental = true;
-        FastConnectable = true;
-      };
-      Policy = {
-        AutoEnable = true;
-      };
-    };
-  };
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="0d3[0-9]", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+    SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="df11", MODE="0666"
+  '';
 
-  fonts = {
-    enableDefaultPackages = true;
-    enableGhostscriptFonts = true;
-    fontconfig.defaultFonts = {
-      serif = ["Noto Serif"];
-      sansSerif = ["Noto Sans"];
-      monospace = ["FiraMono Nerd Font"];
-    };
-    packages = with pkgs; [
-      nerd-fonts.fira-code
-      corefonts
-      vista-fonts
-    ];
-  };
-
-  programs.steam = {
-    enable = true;
-  };
+  programs.steam.enable = true;
   hardware.steam-hardware.enable = true;
 
   # User groups
@@ -263,10 +190,12 @@
         prismlauncher
         kdePackages.kpat
       ];
+      shell = pkgs.zsh;
     };
     wiggy = {
       isNormalUser = true;
       description = "work account";
+      shell = pkgs.zsh;
       extraGroups = [
         "networkmanager"
         "wheel"
@@ -286,7 +215,9 @@
         tilt
         kubectl
         kubernetes-helm
-        k3d
+        teams-for-linux
+        soft-serve
+        crush
       ];
     };
   };
@@ -296,6 +227,50 @@
     "root"
     "@nixusers"
   ];
+
+  programs.hyprlock.enable = true;
+
+  services.k3s = {
+    enable = false;
+    role = "server";
+    extraFlags = "--write-kubeconfig-mode=644";
+  };
+
+  # Only run k3s while user wiggy (uid 1001) has an active session.
+  systemd.services.k3s = {
+    wantedBy = lib.mkForce ["user@1001.service"];
+    bindsTo = ["user@1001.service"];
+    after = lib.mkAfter ["user@1001.service"];
+  };
+
+  # Allow k3s to pull from the local dev registry over plain HTTP.
+  environment.etc."rancher/k3s/registries.yaml".text = ''
+    mirrors:
+      "localhost:5000":
+        endpoint:
+          - "http://localhost:5000"
+  '';
+
+  # Local dev image registry — persistent, auto-started with Docker.
+  virtualisation.oci-containers.containers.registry = {
+    image = "registry:2";
+    ports = ["127.0.0.1:5000:5000"];
+  };
+
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings = {
+      insecure-registries = ["192.168.1.101:5000" "localhost:5000"];
+    };
+  };
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu.swtpm.enable = true;
+  };
+  virtualisation.spiceUSBRedirection.enable = true;
+  services.spice-vdagentd.enable = true;
+
+  zramSwap.enable = true;
 
   programs.firefox = {
     enable = true;
@@ -308,94 +283,18 @@
       "browser.download.autohideButton" = false;
     };
   };
-  programs.obs-studio = {
-    enable = true;
-    enableVirtualCamera = true;
-  };
-
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  environment.sessionVariables.TERMINAL = "kitty";
-  programs.dwl.enable = true;
-
-  programs.bash.enable = true;
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-    settings = {
-      global = {
-        hide_env_diff = true;
-      };
-    };
-  };
-
-  virtualisation.docker = {
-    enable = true;
-    daemon.settings = {
-      insecure-registries = ["192.168.1.101:5000"];
-    };
-  };
-  virtualisation.libvirtd = {
-    enable = true;
-    qemu.swtpm.enable = true;
-  };
-  virtualisation.spiceUSBRedirection.enable = true;
-  services.spice-vdagentd.enable = true;
-
-  programs.nh = {
-    enable = true;
-  };
-
-  programs.nix-ld = {
-    enable = true;
-  };
-
-  nixpkgs.config.allowUnfree = true;
-
-  services.flatpak.enable = true;
 
   environment.systemPackages = with pkgs; [
     # terminal tools
-    wget
-    caligula
-    dysk
-    pulseaudio
-    tree
     evemu
-    micro
-    fzf
-    eza
-    lshw
     pkgsRocmCuda.btop
     blahaj
     lavat
     pipes
     cbonsai
-    yq
-    jq
-    bat
-    fastfetch
-    screen
     nmap
-    speedtest-rs
-    ncdu
-    zip
-    unzip
-    unrar
-    imagemagick
-    rename
     lazydocker
-    socat
-    tio
-    net-tools
-    ripgrep
-    silver-searcher
     pwgen
-    lsof
-    alejandra
     avrdude
     avrdudess
     libimobiledevice
@@ -403,7 +302,6 @@
     can-utils
     acpi
     killall
-    bluetui
     wev
     geteduroam
     shellcheck
@@ -426,23 +324,16 @@
 
     # desktop environment
     hyprpaper
-    waybar
     quickshell
-    hyprshot
     hyprpicker
-    hyprmon
     libnotify
     kdePackages.kio-admin
     kdePackages.systemsettings
     kdePackages.dolphin
     kdePackages.qt6ct
-    pavucontrol
-    mako
-    rofi
     brightnessctl
     bluez
     spice
-    wl-clipboard
     (where-is-my-sddm-theme.override {
       themeConfig.General = {
         showUsersByDefault = true;
@@ -456,7 +347,6 @@
     kdePackages.gwenview
     kdePackages.kdenlive
     kdePackages.partitionmanager
-    kdePackages.kcalc
     inav-configurator
     mission-planner
     libreoffice-qt-fresh
@@ -464,21 +354,17 @@
     qdirstat
     gimp
     rivalcfg
-    freecad
     kicad
     iverilog
     typst
-    zathura
-    kitty
-    nautilus
     prusa-slicer
-    hyprpolkitagent
+    # bambu-studio
+    # ^ causing issues
+    chromium
+    browsh
 
     # video
-    vlc
     handbrake
-    ffmpeg
-    yt-dlp
 
     # sound
     rmpc
@@ -486,6 +372,7 @@
     rhythmbox
     picard
     fmodex
+    mkvtoolnix
 
     # virtualisation
     gnome-boxes
@@ -495,16 +382,21 @@
     distrobox
 
     # file sharing
-    copyparty
-    cloudflared
     localsend
     syncthing
-    qbittorrent
 
     # code editors
     zed-editor
     vscode-fhs
-    arduino-ide
+    (pkgs.symlinkJoin {
+      name = "arduino-ide";
+      paths = [pkgs.arduino-ide];
+      buildInputs = [pkgs.makeWrapper];
+      postBuild = ''
+        wrapProgram $out/bin/arduino-ide \
+          --add-flags "--ozone-platform=x11 --disable-gpu"
+      '';
+    })
 
     # communication
     telegram-desktop
@@ -518,10 +410,8 @@
     omnissa-horizon-client
     pkgsUnstable.claude-code
 
-    # dwl
-    wmenu
-    foot
+    tinywl
   ];
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

@@ -4,7 +4,7 @@
   ...
 }: {
   programs.starship = {
-    enable = true;
+    enable = false;
     settings = {
       format = lib.concatStrings [
         "$\{custom.path\}"
@@ -14,7 +14,6 @@
         "$git_branch"
         "$git_commit"
         "$git_state"
-        "\n$character"
       ];
       add_newline = false;
       git_branch = {
@@ -43,8 +42,8 @@
       };
       character = {
         format = "​";
-		#         ↑ there is an invisible space here
-		#           because starship sucks
+        #         ↑ there is an invisible space here
+        #           because starship sucks
         success_symbol = "";
         error_symbol = "";
       };

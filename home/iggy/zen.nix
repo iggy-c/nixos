@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  config,
   ...
 }: let
   mkLockedAttrs = builtins.mapAttrs (
@@ -73,7 +74,6 @@ in {
         "browser.gesture.swipe.left" = "scrollLeft";
         "browser.gesture.swipe.right" = "scrollRight";
         "browser.tabs.inTitlebar" = 0;
-        "zen.welcome-screen.seen" = true;
       };
     };
 

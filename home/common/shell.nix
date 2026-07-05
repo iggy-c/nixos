@@ -1,4 +1,8 @@
-{...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs.readline = {
     enable = true;
     extraConfig = "set completion-ignore-case on";
@@ -6,6 +10,32 @@
 
   programs.bash = {
     enable = true;
+
+    shellAliases = config.programs.zsh.shellAliases;
+
+    bashrcExtra = ''
+      fff() {
+        command fff "$@"
+        cd "$(cat "''${XDG_CACHE_HOME:=''${HOME}/.cache}/fff/.fff_d")"
+      }
+    '';
+  };
+
+  programs.zsh = {
+    enable = true;
+
+    setOptions = [
+      "noautomenu"
+    ];
+
+    completionInit = "autoload -Uz compinit && compinit -C";
+
+    # append zshrc
+    initContent = ''
+      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+      source ~/.p10k.zsh
+      bindkey "^R" history-incremental-search-backward
+    '';
 
     shellAliases = {
       sudo = "sudo ";
@@ -22,21 +52,23 @@
       miniparty = "copyparty -q & cloudflared tunnel --url http://127.0.0.1:3923 && fg";
       sreboot = "systemctl reboot -i";
       icat = "kitten icat";
-      config = "cd /etc/nixos";
+      conf = "cd /etc/nixos";
       se = "sudoedit";
       wipedocker = "docker stop $(docker ps -aq); docker system prune -a; docker volume prune -a";
       killalldocker = "docker ps -aq | xargs docker rm -f";
-      note = "nvim ~/Documents/notes/$(date +%F).md";
+      note = "nvim ~/Documents/Notes/$(date +%F).md";
+      notes = "nvim ~/Documents/Notes";
       stress = "stress-ng --cpu 0";
       grip = "grep -i";
-      fvf = "vim $(fzf)";
+      fvf = "fzf --bind 'enter:become(vim {})'";
     };
 
-    bashrcExtra = ''
-      fff() {
-        command fff "$@"
-        cd "$(cat "''${XDG_CACHE_HOME:=''${HOME}/.cache}/fff/.fff_d")"
+    plugins = [
+      {
+        name = "powerlevel10k";
+        src = pkgs.zsh-powerlevel10k;
+        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
       }
-    '';
+    ];
   };
 }

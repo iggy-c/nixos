@@ -8,7 +8,7 @@
   home = {
     username = "iggy";
     homeDirectory = "/home/iggy";
-    stateVersion = "25.11";
+    stateVersion = "26.05";
   };
 
   home.activation.createIggyDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''

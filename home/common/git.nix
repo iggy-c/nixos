@@ -5,6 +5,7 @@
       diff.tool = "nvimdiff";
       difftool.prompt = false;
       fetch.recurseSubbmodules = true;
+      init.defaultBranch = "main";
     };
   };
 }

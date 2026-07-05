@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   ...
@@ -41,6 +42,22 @@ in {
         gtk-cursor-theme-name=${cursor-name}
         gtk-icon-theme-name=${icon-name}
       '';
+    };
+  };
+
+  wayland.windowManager.hyprland = {
+    enable = true;
+    # systemd.enable = true;
+    configType = "lua";
+    extraConfig = builtins.readFile ./hyprland.lua;
+  };
+
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      splash = false;
+      preload = ["${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png"];
+      wallpaper = [",${config.home.homeDirectory}/Pictures/Wallpapers/current-wallpaper.png"];
     };
   };
 }
