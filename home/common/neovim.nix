@@ -34,6 +34,8 @@
 
         blink-indent
         guess-indent-nvim
+
+        nvim-ufo
       ];
 
       extraConfig = ''
@@ -47,6 +49,12 @@
         set signcolumn=yes
         set clipboard+=unnamedplus
         set lbr
+        set ignorecase
+        set smartcase
+        set foldlevel=99
+        set foldlevelstart=99
+        set foldenable
+        set foldcolumn=1
       '';
 
       initLua = ''
@@ -55,24 +63,33 @@
         vim.g.gruvbox_background = "soft"
         vim.cmd("colorscheme gruvbox")
         require'colorizer'.setup({
-          user_default_options = {
-            names = false,
-          }
+            user_default_options = {
+                names = false,
+            }
         })
 
         local neo_enabled = true
         vim.keymap.set('n', '<leader>tn', function()
-          if neo_enabled then
-            vim.cmd('CocCommand document.toggleInlayHint')
-            neo_enabled = false
-            vim.notify("Neo features OFF")
-          else
-            vim.cmd('CocEnable')
-            vim.cmd('CocCommand document.toggleInlayHint')
-            neo_enabled = true
-            vim.notify("Neo features ON")
-          end
+            if neo_enabled then
+                vim.cmd('CocCommand document.toggleInlayHint')
+                neo_enabled = false
+                vim.notify("Neo features OFF")
+            else
+                vim.cmd('CocEnable')
+                vim.cmd('CocCommand document.toggleInlayHint')
+                neo_enabled = true
+                vim.notify("Neo features ON")
+            end
         end, { desc = "Toggle neo features (inlay hints)" })
+
+        require'ufo'.setup({
+            provider_selector = function(bufnr, filetype, buftype)
+                return { 'treesitter', 'indent' }
+            end,
+        })
+        vim.keymap.set('n', 'zR', require'ufo'.openAllFolds)
+        vim.keymap.set('n', 'zM', require'ufo'.closeAllFolds)
+        vim.o.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
       '';
 
       coc = {

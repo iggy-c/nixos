@@ -35,6 +35,7 @@
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
       source ~/.p10k.zsh
       bindkey "^R" history-incremental-search-backward
+      unsetopt share_history
     '';
 
     shellAliases = {
@@ -61,6 +62,7 @@
       stress = "stress-ng --cpu 0";
       grip = "grep -i";
       fvf = "fzf --bind 'enter:become(vim {})'";
+      ros-humble = "distrobox enter ubuntu-22-04 -- bash -c 'source /opt/ros/humble/setup.bash && exec bash'";
     };
 
     plugins = [

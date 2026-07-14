@@ -124,8 +124,8 @@ hl.bind("SUPER + ESCAPE", hl.dsp.exec_cmd("hyprlock --grace 0"))
 hl.bind("SUPER + SHIFT + ESCAPE", hl.dsp.exit())
 
 hl.bind("SUPER + W", hl.dsp.window.close())
-hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("magic"))
-hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("S"))
+hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ workspace = "special:S" }))
 hl.bind("SUPER + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + M", hl.dsp.window.fullscreen({ mode = "maximized" }))
 hl.bind("SUPER + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
@@ -151,6 +151,32 @@ hl.gesture({
     direction = "left",
     action = function()
         hl.dispatch(hl.dsp.focus({ workspace = "r+1" }))
+    end,
+})
+hl.gesture({
+    fingers = 3,
+    direction = "up",
+    action = function()
+        if hl.get_active_special_workspace() then
+            hl.dispatch(hl.dsp.workspace.toggle_special("S"))
+        else
+            local win = hl.get_active_window()
+            if not (win and win.fullscreen > 0) then
+                hl.dispatch(hl.dsp.window.fullscreen({ mode = "maximized" }))
+            end
+        end
+    end,
+})
+hl.gesture({
+    fingers = 3,
+    direction = "down",
+    action = function()
+        local win = hl.get_active_window()
+        if win and win.fullscreen > 0 then
+            hl.dispatch(hl.dsp.window.fullscreen({ mode = "maximized" }))
+        elseif not hl.get_active_special_workspace() then
+            hl.dispatch(hl.dsp.workspace.toggle_special("S"))
+        end
     end,
 })
 
@@ -238,7 +264,7 @@ hl.monitor({ output = "desc:Dell Inc. DELL P2722H BML6293", mode = "1920x1080", 
 hl.monitor({ output = "desc:Dell Inc. DELL P2722H 9RL6293", mode = "1920x1080", position = "1920x-1080", scale = 1, transform = 3 })
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("qs -c ~/quickshell")
+    hl.exec_cmd("qs -c ~/waybar-qs")
     hl.exec_cmd("mako")
     hl.exec_cmd("sleep 0.5; hyprctl hyprpaper wallpaper ',~/Pictures/Wallpapers/current-wallpaper.png'")
 end)

@@ -13,9 +13,6 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     sidra.url = "github:wimpysworld/sidra";
-
-    # work
-    claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
   };
 
   outputs = {

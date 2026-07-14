@@ -216,8 +216,6 @@
         kubectl
         kubernetes-helm
         teams-for-linux
-        soft-serve
-        crush
       ];
     };
   };
@@ -271,6 +269,7 @@
   services.spice-vdagentd.enable = true;
 
   zramSwap.enable = true;
+  systemd.oomd.enable = true;
 
   programs.firefox = {
     enable = true;
@@ -380,6 +379,7 @@
     quickemu
     virt-manager
     distrobox
+    bubblewrap
 
     # file sharing
     localsend
