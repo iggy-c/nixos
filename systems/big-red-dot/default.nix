@@ -172,11 +172,15 @@
 
   # User groups
   users.groups.nixusers = {};
+
+  users.mutableUsers = false;
+
   # User accounts
   users.users = {
     iggy = {
       isNormalUser = true;
       description = "personal account";
+      shell = pkgs.zsh;
       extraGroups = [
         "networkmanager"
         "wheel"
@@ -190,7 +194,7 @@
         prismlauncher
         kdePackages.kpat
       ];
-      shell = pkgs.zsh;
+      hashedPassword = "$y$j9T$jTIhxKqQEYUEqyHYMk9i31$GHW3G/zQtsphW2xSSuG4uudimENPzy2KQuR7H7yaXg/";
     };
     wiggy = {
       isNormalUser = true;
@@ -217,6 +221,7 @@
         kubernetes-helm
         teams-for-linux
       ];
+      hashedPassword = "$y$j9T$7Xj9rY9zZmZyP9PQ.q8kS1$Ck0QTPE0OrSlywRkpb6Arcd4P9x5zHp0xEAOw.xj.yB";
     };
   };
   nix.settings.trusted-users = [

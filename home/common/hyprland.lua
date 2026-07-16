@@ -26,7 +26,6 @@ hl.config({
     -- see https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
     dwindle = {
         preserve_split = false,
-        force_split = 2,
         split_width_multiplier = 1.5, -- 16:9
     },
 
@@ -120,7 +119,7 @@ hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"))
 hl.bind("SUPER + PERIOD", hl.dsp.exec_cmd("rofi -modi emoji -show emoji"))
 hl.bind("SUPER + Q", hl.dsp.exec_cmd("kitten quick-access-terminal"))
 hl.bind("SUPER + B", hl.dsp.exec_cmd("~/scripts/earbuds_toggle.sh"))
-hl.bind("SUPER + ESCAPE", hl.dsp.exec_cmd("hyprlock --grace 0"))
+hl.bind("SUPER + ESCAPE", hl.dsp.exec_cmd("qs -p ~/irs/lockscreen"))
 hl.bind("SUPER + SHIFT + ESCAPE", hl.dsp.exit())
 
 hl.bind("SUPER + W", hl.dsp.window.close())
@@ -260,11 +259,11 @@ hl.workspace_rule({ workspace = "1", monitor = "eDP-1", default = true, persiste
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
 -- work monitors
-hl.monitor({ output = "desc:Dell Inc. DELL P2722H BML6293", mode = "1920x1080", position = "0x-1080", scale = 1 })
+hl.monitor({ output = "desc:Dell Inc. DELL P2722H BML6293", mode = "1920x1080", position = "0x-1080", scale = 1, transform = 2 })
 hl.monitor({ output = "desc:Dell Inc. DELL P2722H 9RL6293", mode = "1920x1080", position = "1920x-1080", scale = 1, transform = 3 })
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("qs -c ~/waybar-qs")
+    hl.exec_cmd("qs -c ~/irs/bar/")
     hl.exec_cmd("mako")
     hl.exec_cmd("sleep 0.5; hyprctl hyprpaper wallpaper ',~/Pictures/Wallpapers/current-wallpaper.png'")
 end)

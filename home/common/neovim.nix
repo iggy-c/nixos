@@ -47,7 +47,6 @@
         set shiftwidth=4
         set tabstop=4
         set signcolumn=yes
-        set clipboard+=unnamedplus
         set lbr
         set ignorecase
         set smartcase
@@ -90,6 +89,9 @@
         vim.keymap.set('n', 'zR', require'ufo'.openAllFolds)
         vim.keymap.set('n', 'zM', require'ufo'.closeAllFolds)
         vim.o.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
+        -- weird override for copying to system clipboard (riley dont blind copy)
+        vim.keymap.set({'n', 'x'}, 'Y', '"+y')
+        vim.keymap.set('n', 'YY', '"+yy')
       '';
 
       coc = {

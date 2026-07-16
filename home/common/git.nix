@@ -4,7 +4,7 @@
     settings = {
       diff.tool = "nvimdiff";
       difftool.prompt = false;
-      fetch.recurseSubbmodules = true;
+      fetch.recurseSubmodules = true;
       init.defaultBranch = "main";
     };
   };
