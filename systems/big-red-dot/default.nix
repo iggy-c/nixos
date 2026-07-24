@@ -220,6 +220,7 @@
         kubectl
         kubernetes-helm
         teams-for-linux
+        glab
       ];
       hashedPassword = "$y$j9T$7Xj9rY9zZmZyP9PQ.q8kS1$Ck0QTPE0OrSlywRkpb6Arcd4P9x5zHp0xEAOw.xj.yB";
     };
@@ -285,6 +286,7 @@
       "browser.tabs.inTitlebar" = 0;
       "browser.download.panel.shown" = true;
       "browser.download.autohideButton" = false;
+      "middlemouse.paste" = false;
     };
   };
 
@@ -377,6 +379,8 @@
     picard
     fmodex
     mkvtoolnix
+    lmms-full
+    audacity
 
     # virtualisation
     gnome-boxes

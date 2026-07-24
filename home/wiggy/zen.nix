@@ -74,6 +74,7 @@ in {
         "browser.gesture.swipe.right" = "scrollRight";
         "browser.tabs.inTitlebar" = 0;
         "zen.welcome-screen.seen" = true;
+        "middlemouse.paste" = false;
       };
     };
 

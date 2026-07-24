@@ -74,6 +74,7 @@ in {
         "browser.gesture.swipe.left" = "scrollLeft";
         "browser.gesture.swipe.right" = "scrollRight";
         "browser.tabs.inTitlebar" = 0;
+        "middlemouse.paste" = false;
       };
     };
 

@@ -54,6 +54,11 @@
         set foldlevelstart=99
         set foldenable
         set foldcolumn=1
+        set cinoptions+=+0
+        map <F1> <Esc>
+        imap <F1> <Esc>
+        :map <MiddleMouse> <Nop>
+        :imap <MiddleMouse> <Nop>
       '';
 
       initLua = ''
@@ -67,19 +72,35 @@
             }
         })
 
-        local neo_enabled = true
-        vim.keymap.set('n', '<leader>tn', function()
-            if neo_enabled then
+
+        -- todo: fix below
+        local hints_enabled = true
+        vim.keymap.set('n', '<leader>th', function()
+            if hints_enabled then
                 vim.cmd('CocCommand document.toggleInlayHint')
-                neo_enabled = false
-                vim.notify("Neo features OFF")
+                hints_enabled = false
+                vim.notify("Type hints OFF")
+            else
+                vim.cmd('CocCommand document.toggleInlayHint')
+                hints_enabled = true
+                vim.notify("Type hints ON")
+            end
+        end, { desc = "Toggle inlay hints" })
+
+        local autocomplete_enabled = true
+        vim.keymap.set('n', '<leader>ta', function()
+            if autocomplete_enabled then
+                vim.cmd('CocDisable')
+                autocomplete_enabled = false
+                vim.notify("Autocompletion OFF")
             else
                 vim.cmd('CocEnable')
-                vim.cmd('CocCommand document.toggleInlayHint')
-                neo_enabled = true
-                vim.notify("Neo features ON")
+                autocomplete_enabled = true
+                vim.notify("Autocompletion ON")
             end
-        end, { desc = "Toggle neo features (inlay hints)" })
+        end, { desc = "Toggle autocomplete" })
+
+        require'guess-indent'.setup()
 
         require'ufo'.setup({
             provider_selector = function(bufnr, filetype, buftype)
