@@ -57,6 +57,11 @@ hl.config({
     animations = {
         enabled = true,
     },
+
+    ecosystem = {
+        no_update_news = true;
+        no_donation_nag = true;
+    },
 })
 
 -- bezier curves
@@ -201,6 +206,12 @@ hl.define_submap("screenshot", function()
     hl.bind("M", function() cmd_region = "output"; try_exec() end)
     hl.bind("W", function() cmd_region = "window"; try_exec() end)
     hl.bind("R", function() cmd_region = "region"; try_exec() end)
+
+    -- ocr da screenshot
+    hl.bind("T", function()
+        cmd_arg = "-so /tmp -f latest_img.png; tesseract /tmp/latest_img.png /tmp/latest_text; wl-copy < /tmp/latest_text.txt"
+        try_exec()
+    end)
 
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
 end)

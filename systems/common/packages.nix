@@ -54,5 +54,6 @@
     cage
     glow
     inputs.sidra.packages.${pkgs.system}.default
+    tesseract
   ];
 }
