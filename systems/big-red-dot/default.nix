@@ -373,7 +373,6 @@
     handbrake
 
     # sound
-    rmpc
     spotify
     rhythmbox
     picard

@@ -209,7 +209,7 @@ hl.define_submap("screenshot", function()
 
     -- ocr da screenshot
     hl.bind("T", function()
-        cmd_arg = "-so /tmp -f latest_img.png; tesseract /tmp/latest_img.png /tmp/latest_text; wl-copy < /tmp/latest_text.txt"
+        cmd_arg = "-so /tmp -f $(id -u)_latest_img.png; tesseract /tmp/$(id -u)_latest_img.png /tmp/$(id -u)_latest_text; wl-copy < /tmp/$(id -u)_latest_text.txt"
         try_exec()
     end)
 
