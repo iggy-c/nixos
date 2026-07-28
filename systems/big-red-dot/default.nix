@@ -275,7 +275,15 @@
   services.spice-vdagentd.enable = true;
 
   zramSwap.enable = true;
-  systemd.oomd.enable = true;
+
+  systemd.oomd = {
+    enable = true;
+    enableRootSlice = true;
+    enableSystemSlice = true;
+    enableUserSlices = true;
+    settings.OOM.DefaultMemoryPressureDurationSec = "10s";
+  };
+  systemd.slices."user".sliceConfig.ManagedOOMMemoryPressureLimit = "60%";
 
   programs.firefox = {
     enable = true;
@@ -289,6 +297,8 @@
       "middlemouse.paste" = false;
     };
   };
+
+  environment.variables.RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
 
   environment.systemPackages = with pkgs; [
     # terminal tools
@@ -319,12 +329,14 @@
     python3
     clang-tools
     clang
+    rustc
     cargo
-    rustup
+    clippy
+    rustfmt
+    rust-analyzer
     bun
     gnumake
     mono
-    rust-analyzer
     nil
     gcc
 
@@ -356,7 +368,6 @@
     inav-configurator
     mission-planner
     libreoffice-qt-fresh
-    onlyoffice-desktopeditors
     qdirstat
     gimp
     rivalcfg
@@ -368,6 +379,7 @@
     # ^ causing issues
     chromium
     browsh
+    calibre
 
     # video
     handbrake
@@ -420,6 +432,12 @@
 
     tinywl
   ];
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 9090 ];
+    allowedUDPPorts = [ 9090 ];
+  };
 
   system.stateVersion = "26.05";
 }
