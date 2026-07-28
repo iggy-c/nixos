@@ -65,8 +65,6 @@ hl.config({
 })
 
 -- bezier curves
-
-hl.curve("specialWorkSwitch", { type = "bezier", points = { { 0.05, 0.5 }, { 0.1, 1 } } })
 hl.curve("emphasizedAccel", { type = "bezier", points = { { 0.3, 0 }, { 0.5, 0.15 } } })
 hl.curve("emphasizedDecel", { type = "bezier", points = { { 0.05, 0.5 }, { 0.1, 1 } } })
 hl.curve("standard", { type = "bezier", points = { { 0.2, 0 }, { 0, 1 } } })
@@ -80,12 +78,8 @@ hl.animation({ leaf = "windowsIn", enabled = true, speed = 1, bezier = "emphasiz
 hl.animation({ leaf = "windowsOut", enabled = true, speed = 1, bezier = "emphasizedAccel" })
 hl.animation({ leaf = "windowsMove", enabled = true, speed = 1, bezier = "standard" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 1, bezier = "standard" })
-hl.animation({
-    leaf = "specialWorkspace",
-    enabled = false,
-    speed = 0,
-    bezier = "specialWorkSwitch"
-})
+hl.animation({ leaf = "specialWorkspaceIn", enabled = true, speed = 1, bezier = "standard", style = "slidevert top" })
+hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 1, bezier = "emphasizedAccel", style = "slidevert bottom" })
 hl.animation({ leaf = "fade", enabled = true, speed = 1, bezier = "standard" })
 hl.animation({ leaf = "fadeDim", enabled = true, speed = 1, bezier = "standard" })
 hl.animation({ leaf = "border", enabled = true, speed = 1, bezier = "standard" })
@@ -278,5 +272,3 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("mako")
     hl.exec_cmd("sleep 0.5; hyprctl hyprpaper wallpaper ',~/Pictures/Wallpapers/current-wallpaper.png'")
 end)
-
-
