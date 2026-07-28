@@ -12,7 +12,7 @@
 
   # below is list from https://wiki.nixos.org/wiki/Nix-ld
   programs.nix-ld = {
-    enable = false;
+    enable = true;
     libraries = with pkgs; [
       # List by default
       zlib

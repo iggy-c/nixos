@@ -47,7 +47,7 @@ in {
 
   wayland.windowManager.hyprland = {
     enable = true;
-    # systemd.enable = true;
+    systemd.variables = ["--all"]; # fixes theme in dbus activated apps?
     configType = "lua";
     extraConfig = builtins.readFile ./hyprland.lua;
   };
