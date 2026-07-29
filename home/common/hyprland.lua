@@ -114,7 +114,7 @@ hl.window_rule({
 
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd("kitty"))
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("rofi -modes \"drun,ssh,window\" -show drun"))
-hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"))
+hl.bind("SUPER + E", hl.dsp.exec_cmd("dolphin"))
 hl.bind("SUPER + PERIOD", hl.dsp.exec_cmd("rofi -modi emoji -show emoji"))
 hl.bind("SUPER + Q", hl.dsp.exec_cmd("kitten quick-access-terminal"))
 hl.bind("SUPER + B", hl.dsp.exec_cmd("~/scripts/earbuds_toggle.sh"))

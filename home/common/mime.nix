@@ -97,7 +97,7 @@ in {
         "x-scheme-handler/https"
       ]
       # directories & archives
-      // assoc "org.gnome.Nautilus.desktop" [
+      // assoc "org.kde.dolphin.desktop" [
         "inode/directory"
         "application/zip"
         "application/gzip"

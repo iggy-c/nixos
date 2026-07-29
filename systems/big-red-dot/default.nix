@@ -347,7 +347,6 @@
     libnotify
     kdePackages.kio-admin
     kdePackages.systemsettings
-    kdePackages.dolphin
     kdePackages.qt6ct
     brightnessctl
     bluez

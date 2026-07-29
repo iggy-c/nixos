@@ -41,7 +41,7 @@
     cloudflared
     zathura
     kitty
-    nautilus
+    kdePackages.dolphin
     qalculate-gtk
     waybar
     hyprmon
