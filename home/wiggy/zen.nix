@@ -50,7 +50,7 @@ in {
       DisableTelemetry = true;
       DontCheckDefaultBrowser = true;
       NoDefaultBookmakrs = true;
-      OfferToSaveLogins = true;
+      OfferToSaveLogins = false;
       DisableSetDesktopBackground = true;
       EnableTrackingProtection = {
         Value = true;
@@ -66,6 +66,7 @@ in {
         };
         "{74145f27-f039-47ce-a470-a662b129930a}" = "clearurls";
         "firefox-extension@steamdb.info" = "steam-database";
+        "{446900e4-71c2-419f-a6a7-df9c091e268b}" = "bitwarden-password-manager";
       };
 
       Preferences = mkLockedAttrs {
