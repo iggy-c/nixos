@@ -12,6 +12,7 @@
       nerd-fonts.fira-code
       corefonts
       vista-fonts
+      sitelen-seli-kiwen
     ];
   };
 

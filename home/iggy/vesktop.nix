@@ -50,7 +50,6 @@
         PermissionsViewer.enabled = true;
         petpet.enabled = true;
         PictureInPicture.enabled = true;
-        PinDMs.enabled = true;
         PlatformIndicators.enabled = true;
         ShowHiddenChannels.enabled = true;
         ShowHiddenThings.enabled = true;

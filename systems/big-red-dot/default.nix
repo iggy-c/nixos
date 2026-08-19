@@ -192,7 +192,6 @@
       packages = with pkgs; [
         gh
         prismlauncher
-        kdePackages.kpat
       ];
       hashedPassword = "$y$j9T$jTIhxKqQEYUEqyHYMk9i31$GHW3G/zQtsphW2xSSuG4uudimENPzy2KQuR7H7yaXg/";
     };
@@ -324,6 +323,7 @@
     fff
     stress-ng
     nix-du
+    vhs
 
     # languages
     python3
@@ -430,6 +430,7 @@
     pkgsUnstable.claude-code
 
     tinywl
+    ace-of-penguins
   ];
 
   networking.firewall = {

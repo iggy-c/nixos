@@ -53,7 +53,10 @@
     lm_sensors
     cage
     glow
-    inputs.sidra.packages.${pkgs.system}.default
+    inputs.sidra.packages.${pkgs.stdenv.hostPlatform.system}.default
     tesseract
+    mpv
+    bitwarden-cli
+    cheese
   ];
 }
