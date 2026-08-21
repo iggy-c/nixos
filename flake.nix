@@ -11,8 +11,14 @@
     };
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    sidra.url = "github:wimpysworld/sidra";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sidra = {
+      url = "github:wimpysworld/sidra";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {

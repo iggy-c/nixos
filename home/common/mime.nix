@@ -44,7 +44,7 @@ in {
         "application/toml"
         "application/x-yaml"
       ]
-      # documents 
+      # documents
       // assoc "org.pwmt.zathura.desktop" [
         "application/pdf"
         "application/postscript"
@@ -56,7 +56,7 @@ in {
         "application/x-cbz"
         "application/x-cbr"
       ]
-      # images 
+      # images
       // assoc "org.kde.gwenview.desktop" [
         "image/png"
         "image/jpeg"
@@ -89,7 +89,7 @@ in {
         "video/mpeg"
         "video/ogg"
       ]
-      # web 
+      # web
       // assoc "zen-beta.desktop" [
         "text/html"
         "application/xhtml+xml"
@@ -109,7 +109,7 @@ in {
         "application/x-bzip2-compressed-tar"
         "application/x-xz-compressed-tar"
       ]
-      # office 
+      # office
       // assoc "writer.desktop" [
         "application/msword"
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"

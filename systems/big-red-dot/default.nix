@@ -208,8 +208,6 @@
         "dialout"
       ];
       packages = with pkgs; [
-        pkgsMain.code-cursor
-        keepassxc
         dbeaver-bin
         goose-cli
         pkgsUnstable.liteparse
@@ -435,8 +433,8 @@
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 9090 ];
-    allowedUDPPorts = [ 9090 ];
+    allowedTCPPorts = [9090];
+    allowedUDPPorts = [9090];
   };
 
   system.stateVersion = "26.05";

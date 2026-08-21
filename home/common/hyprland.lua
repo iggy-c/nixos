@@ -118,7 +118,7 @@ hl.bind("SUPER + E", hl.dsp.exec_cmd("dolphin"))
 hl.bind("SUPER + PERIOD", hl.dsp.exec_cmd("rofi -modi emoji -show emoji"))
 hl.bind("SUPER + Q", hl.dsp.exec_cmd("kitten quick-access-terminal"))
 hl.bind("SUPER + B", hl.dsp.exec_cmd("~/scripts/earbuds_toggle.sh"))
-hl.bind("SUPER + ESCAPE", hl.dsp.exec_cmd("qs -p ~/irs/lockscreen"))
+hl.bind("SUPER + ESCAPE", hl.dsp.exec_cmd("qs -p ~/iggys-reasonable-shell/lockscreen"))
 hl.bind("SUPER + SHIFT + ESCAPE", hl.dsp.exit())
 
 hl.bind("SUPER + W", hl.dsp.window.close())
@@ -268,7 +268,7 @@ hl.monitor({ output = "desc:Dell Inc. DELL P2722H BML6293", mode = "1920x1080", 
 hl.monitor({ output = "desc:Dell Inc. DELL P2722H 9RL6293", mode = "1920x1080", position = "1920x-1080", scale = 1, transform = 3 })
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("qs -c ~/irs/bar/")
+    hl.exec_cmd("qs -c ~/iggys-reasonable-shell/bar/")
     hl.exec_cmd("mako")
     hl.exec_cmd("sleep 0.5; hyprctl hyprpaper wallpaper ',~/Pictures/Wallpapers/current-wallpaper.png'")
 end)
