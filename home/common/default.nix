@@ -1,4 +1,4 @@
-{lib, ...}: {
+{lib, config, ...}: {
   imports =
     builtins.map (n: ./. + "/${n}")
     (builtins.filter
@@ -28,4 +28,9 @@
   home.activation.createCommonDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
     mkdir -p $HOME/scripts $HOME/notes
   '';
+
+  # for firenvim
+  home.activation.firenvimInstall = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD ${config.programs.neovim.finalPackage}/bin/nvim --headless "+call firenvim#install(0)" +qa
+'';
 }

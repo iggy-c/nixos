@@ -36,6 +36,8 @@
         guess-indent-nvim
 
         nvim-ufo
+
+        firenvim
       ];
 
       extraConfig = ''
@@ -113,6 +115,24 @@
         -- weird override for copying to system clipboard (riley dont blind copy)
         vim.keymap.set({'n', 'x'}, 'Y', '"+y')
         vim.keymap.set('n', 'YY', '"+yy')
+
+        -- firenvim config
+        vim.g.firenvim_config = {
+            globalSettings = { alt = "all" };
+            localSettings = {
+                [".*"] = {
+                    selector = "",  -- disable firenvim by default
+                    priority = 0
+                },
+                ["cpulator"] = {
+                    cmdline = "neovim",
+                    content = "text",
+                    priority = 1,
+                    selector = "textarea",
+                    takeover = "always"
+                }
+            }
+        }
       '';
 
       coc = {
