@@ -63,6 +63,10 @@ hl.config({
         no_update_news = true;
         no_donation_nag = true;
     },
+
+    xwayland = {
+        force_zero_scaling = true
+    },
 })
 
 -- bezier curves
@@ -93,6 +97,14 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 -- makes some electron apps work a bit better
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
 
+-- per-toolkit scaling of xwayland apps
+-- https://wiki.hypr.land/configuring/extra/xwayland/
+hl.env("GDK_SCALE", "2")
+hl.env("XCURSOR_SIZE", "32")
+
+-- fix default file associations dolphin
+hl.env("XDG_MENU_PREFIX", "plasma-")
+
 -- see https://wiki.hypr.land/Configuring/Basics/Window-Rules/ for more
 hl.window_rule({ match = { class = ".*" }, suppress_event = "maximize" })
 -- fix some dragging issues with xwayland
@@ -109,6 +121,10 @@ hl.window_rule({
 })
 
 -- devices
+hl.device({
+    name = "steelseries-steelseries-rival-3-wireless",
+    sensitivity = -0.5
+})
 
 -- keybinds
 -- See https://wiki.hypr.land/Configuring/Basics/Binds/ for more
@@ -176,6 +192,13 @@ hl.gesture({
         elseif not hl.get_active_special_workspace() then
             hl.dispatch(hl.dsp.workspace.toggle_special("S"))
         end
+    end,
+})
+hl.gesture({
+    fingers = 4,
+    direction = "up",
+    action = function()
+        hl.dsp.exec_cmd("qs ipc -c overview call overview toggle")
     end,
 })
 
@@ -270,6 +293,7 @@ hl.monitor({ output = "desc:Dell Inc. DELL P2722H 9RL6293", mode = "1920x1080", 
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("qs -c ~/iggys-reasonable-shell/bar/")
+    hl.exec_cmd("qs -c ~/.config/quickshell/overview/")
     hl.exec_cmd("mako")
-    hl.exec_cmd("sleep 0.5; hyprctl hyprpaper wallpaper ',~/Pictures/Wallpapers/current-wallpaper.png'")
+    hl.exec_cmd("sleep 0.25; hyprctl hyprpaper wallpaper ',~/Pictures/Wallpapers/current-wallpaper.png'")
 end)

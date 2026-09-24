@@ -42,6 +42,7 @@
     zathura
     kitty
     kdePackages.dolphin
+    kdePackages.ark
     qalculate-gtk
     waybar
     hyprmon

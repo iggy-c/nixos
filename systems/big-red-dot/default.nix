@@ -4,7 +4,6 @@
   pkgs,
   pkgsRocmCuda,
   pkgsUnstable,
-  pkgsMain,
   ...
 }: {
   imports = [
@@ -81,6 +80,7 @@
     openssh.enable = true;
     udev.packages = with pkgs; [
       platformio-core
+      probe-rs-tools
     ];
 
     upower.enable = true;
@@ -377,6 +377,10 @@
     chromium
     browsh
     calibre
+    proton-vpn
+    drawio
+    openrocket
+    openscad
 
     # video
     handbrake
