@@ -133,6 +133,12 @@
                 }
             }
         }
+        if vim.g.started_by_firenvim == true then
+            vim.api.nvim_create_autocmd({'TextChanged', 'TextChangedI'}, {
+                nested = true,
+                command = "write"
+            })
+        end
       '';
 
       coc = {
